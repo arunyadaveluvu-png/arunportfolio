@@ -52,18 +52,23 @@ export const ManageMessages: React.FC = () => {
   };
 
   const handleMarkReadAndReply = async (msg: Message) => {
-    try {
-      if (!msg.is_read) {
+    // Optimistically update the message as read in UI state
+    setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, is_read: true } : m));
+    if (selectedMessage?.id === msg.id) {
+      setSelectedMessage(prev => prev ? { ...prev, is_read: true } : null);
+    }
+
+    // Open mail client immediately
+    const mailtoUrl = `mailto:${msg.email}?subject=${encodeURIComponent(`Re: ${msg.subject || 'Inquiry'}`)}&body=${encodeURIComponent(`Hi ${msg.name},\n\n`)}`;
+    window.location.href = mailtoUrl;
+
+    // Update database in the background if it was unread
+    if (!msg.is_read) {
+      try {
         await api.messages.markRead(msg.id, true);
-        fetchMessages();
-        if (selectedMessage?.id === msg.id) {
-          setSelectedMessage(prev => prev ? { ...prev, is_read: true } : null);
-        }
+      } catch (err) {
+        console.error('Failed to mark read in database:', err);
       }
-      const mailtoUrl = `mailto:${msg.email}?subject=${encodeURIComponent(`Re: ${msg.subject || 'Inquiry'}`)}&body=${encodeURIComponent(`Hi ${msg.name},\n\n`)}`;
-      window.location.href = mailtoUrl;
-    } catch (err) {
-      console.error(err);
     }
   };
 
