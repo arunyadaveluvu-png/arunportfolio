@@ -51,6 +51,22 @@ export const ManageMessages: React.FC = () => {
     }
   };
 
+  const handleMarkReadAndReply = async (msg: Message) => {
+    try {
+      if (!msg.is_read) {
+        await api.messages.markRead(msg.id, true);
+        fetchMessages();
+        if (selectedMessage?.id === msg.id) {
+          setSelectedMessage(prev => prev ? { ...prev, is_read: true } : null);
+        }
+      }
+      const mailtoUrl = `mailto:${msg.email}?subject=${encodeURIComponent(`Re: ${msg.subject || 'Inquiry'}`)}&body=${encodeURIComponent(`Hi ${msg.name},\n\n`)}`;
+      window.location.href = mailtoUrl;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSendReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMessage || !replyText) return;
@@ -173,9 +189,18 @@ export const ManageMessages: React.FC = () => {
                     <span className={`text-xs font-bold ${msg.is_read ? 'text-gray-400' : 'text-purple-300'}`}>
                       {msg.name}
                     </span>
-                    <span className="text-[9px] text-gray-500">
-                      {new Date(msg.created_at).toLocaleDateString()}
-                    </span>
+                    <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
+                      <span className="text-[9px] text-gray-500">
+                        {new Date(msg.created_at).toLocaleDateString()}
+                      </span>
+                      <button
+                        onClick={() => handleMarkReadAndReply(msg)}
+                        className={`p-1.5 rounded-lg border transition-all cursor-pointer ${msg.is_read ? 'bg-white/5 border-white/5 text-gray-400 hover:text-purple-400' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-white'}`}
+                        title="Mark Read and Reply via Email"
+                      >
+                        <FiCheck className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                   <p className={`text-xs truncate font-medium ${msg.is_read ? 'text-gray-500' : 'text-gray-200 font-semibold'}`}>
                     {msg.subject || 'No Subject'}
@@ -219,13 +244,13 @@ export const ManageMessages: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => handleMarkRead(selectedMessage.id, selectedMessage.is_read)}
-                      className={`p-2 rounded-lg bg-white/5 text-gray-400 transition-colors cursor-pointer ${
-                        selectedMessage.is_read ? 'hover:text-purple-300' : 'hover:text-emerald-300'
+                      onClick={() => handleMarkReadAndReply(selectedMessage)}
+                      className={`p-2 rounded-lg transition-colors cursor-pointer border ${
+                        selectedMessage.is_read ? 'bg-white/5 border-white/5 text-gray-400 hover:text-purple-300' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-white'
                       }`}
-                      title={selectedMessage.is_read ? 'Mark as Unread' : 'Mark as Read'}
+                      title="Mark Read and Reply via Email"
                     >
-                      <FiCheck className={`w-4 h-4 ${selectedMessage.is_read ? 'text-emerald-400' : ''}`} />
+                      <FiCheck className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(selectedMessage.id)}
