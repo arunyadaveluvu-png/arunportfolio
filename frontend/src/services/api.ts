@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://arunportfolio-03k6.onrender.com';
 
 // Helper to fetch auth headers
 const getHeaders = async (isMultipart = false) => {
@@ -19,7 +19,7 @@ const getHeaders = async (isMultipart = false) => {
 
 // Generic fetch wrapper
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, options);
+  const response = await fetch(`${API_URL}/api${path}`, options);
   
   if (!response.ok) {
     const errorJson = await response.json().catch(() => ({}));
