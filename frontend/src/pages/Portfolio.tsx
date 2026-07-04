@@ -100,6 +100,37 @@ export const Portfolio: React.FC = () => {
 
   // Interaction States
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
+  const [activeCertModal, setActiveCertModal] = useState<any | null>(null);
+  const [showInlinePreview, setShowInlinePreview] = useState(false);
+  const [previewBlobUrl, setPreviewBlobUrl] = useState<string>('');
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  const closeCertModal = () => {
+    setActiveCertModal(null);
+    setShowInlinePreview(false);
+    if (previewBlobUrl) {
+      window.URL.revokeObjectURL(previewBlobUrl);
+      setPreviewBlobUrl('');
+    }
+  };
+
+  const handlePreviewClick = async (certPdf: string) => {
+    setPdfLoading(true);
+    try {
+      const response = await fetch(certPdf);
+      const blob = await response.blob();
+      const viewBlob = new Blob([blob], { type: 'application/pdf' });
+      const viewUrl = window.URL.createObjectURL(viewBlob);
+      setPreviewBlobUrl(viewUrl);
+      setShowInlinePreview(true);
+    } catch (error) {
+      console.error(error);
+      window.open(certPdf, '_blank');
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   const [projectSearch, setProjectSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   
@@ -332,6 +363,8 @@ export const Portfolio: React.FC = () => {
   const defaultWords = ['Aspiring Data Analyst', 'AI & ML Enthusiast', 'Full Stack Developer'];
   const typingWords = profile?.title ? profile.title.split('|').map((t: string) => t.trim()) : defaultWords;
 
+  const showBanner = profile?.social_links?.show_banner !== false;
+
   return (
     <div className="relative min-h-screen bg-[#030014] overflow-x-hidden text-gray-200">
       {/* Decorative Orbs */}
@@ -339,20 +372,46 @@ export const Portfolio: React.FC = () => {
       <div className="absolute top-[1200px] right-0 w-[400px] h-[400px] bg-purple-900/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
       <div className="absolute top-[2200px] left-0 w-[450px] h-[450px] bg-blue-900/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
 
+      {/* Cover Banner */}
+      {showBanner && (
+        <div className="relative w-full h-[200px] sm:h-[280px] md:h-[320px] overflow-hidden z-0">
+          {profile?.cover_photo ? (
+            <img 
+              src={profile.cover_photo} 
+              alt="Cover Banner" 
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-blue-950/40 via-purple-950/40 to-pink-950/40" />
+          )}
+          {/* Gradients to blend banner to header and main body */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/60 via-transparent to-[#030014]"></div>
+        </div>
+      )}
+
       {/* Particle lines animation canvas */}
       <ParticleBackground />
 
       {/* ==========================================
           HERO SECTION
           ========================================== */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 lg:px-8 z-10">
+      <section 
+        id="hero" 
+        className={`relative flex items-center justify-center px-4 sm:px-6 lg:px-8 z-10 ${
+          showBanner 
+            ? 'pt-12 pb-16 min-h-[40vh] sm:min-h-[50vh]' 
+            : 'pt-24 pb-12 min-h-screen'
+        }`}
+      >
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Profile Photo */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative w-36 h-36 mx-auto cursor-pointer"
+            className={`relative w-36 h-36 mx-auto cursor-pointer ${
+              showBanner ? '-mt-24 sm:-mt-28' : ''
+            }`}
           >
             <TiltCard className="w-full h-full rounded-full p-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shadow-2xl shadow-purple-500/20">
               <div className="w-full h-full rounded-full bg-gray-900 overflow-hidden flex items-center justify-center border-2 border-black" style={{ transform: 'translateZ(30px)' }}>
@@ -465,20 +524,36 @@ export const Portfolio: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
                 <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
                   <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Interests</h4>
-                  <ul className="text-gray-400 text-xs space-y-1.5">
-                    <li>• Machine Learning & Neural Networks</li>
-                    <li>• Business Intelligence & Dashboard Drafting</li>
-                    <li>• Quantitative Trading Algorithms</li>
-                    <li>• Full-Stack App Engineering</li>
+                  <ul className="text-gray-400 text-xs space-y-1.5 animate-fade-in">
+                    {profile?.social_links?.interests && profile.social_links.interests.length > 0 ? (
+                      profile.social_links.interests.map((interest: string, idx: number) => (
+                        <li key={idx}>• {interest}</li>
+                      ))
+                    ) : (
+                      <>
+                        <li>• Machine Learning & Neural Networks</li>
+                        <li>• Business Intelligence & Dashboard Drafting</li>
+                        <li>• Quantitative Trading Algorithms</li>
+                        <li>• Full-Stack App Engineering</li>
+                      </>
+                    )}
                   </ul>
                 </div>
                 
                 <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
                   <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Languages Known</h4>
-                  <ul className="text-gray-400 text-xs space-y-1.5 flex flex-wrap gap-x-4 gap-y-1.5">
-                    <li>• English (Professional)</li>
-                    <li>• Hindi (Native)</li>
-                    <li>• Odia (Conversational)</li>
+                  <ul className="text-gray-400 text-xs space-y-1.5 flex flex-wrap gap-x-4 gap-y-1.5 animate-fade-in">
+                    {profile?.social_links?.languages && profile.social_links.languages.length > 0 ? (
+                      profile.social_links.languages.map((lang: string, idx: number) => (
+                        <li key={idx}>• {lang}</li>
+                      ))
+                    ) : (
+                      <>
+                        <li>• English (Professional)</li>
+                        <li>• Hindi (Native)</li>
+                        <li>• Odia (Conversational)</li>
+                      </>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -896,43 +971,79 @@ export const Portfolio: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {certs.map((cert, idx) => (
-              <motion.div 
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -25 : 25 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6 }}
-                key={cert.id} 
-                className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-white/10 transition-colors"
-              >
-                <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                  <div className="p-3.5 rounded-2xl bg-purple-500/10 text-purple-400 group-hover:scale-110 transition-transform">
-                    <FiAward className="w-7 h-7" />
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <h3 className="text-sm font-bold text-white leading-snug">{cert.name}</h3>
-                    <p className="text-purple-300/80 text-xs font-semibold mt-1">{cert.organization}</p>
-                    {cert.issue_date && (
-                      <span className="text-[10px] text-gray-500 block mt-2">
-                        Issued: {new Date(cert.issue_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
-                      </span>
-                    )}
-                  </div>
-                </div>
+            {certs.map((cert, idx) => {
+              const { image, pdf, drive } = (() => {
+                if (!cert.image_url) return { image: '', pdf: '', drive: '' };
+                if (cert.image_url.includes('|')) {
+                  const parts = cert.image_url.split('|');
+                  return {
+                    image: parts[0]?.trim() || '',
+                    pdf: parts[1]?.trim() || '',
+                    drive: parts[2]?.trim() || ''
+                  };
+                }
+                if (cert.image_url.toLowerCase().includes('.pdf')) {
+                  return { image: '', pdf: cert.image_url.trim(), drive: '' };
+                }
+                return { image: cert.image_url.trim(), pdf: '', drive: '' };
+              })();
 
-                {cert.verification_url && (
-                  <a
-                    href={cert.verification_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
-                  >
-                    <span>Verify</span>
-                    <FiArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </motion.div>
-            ))}
+              const finalPdf = pdf || (cert.verification_url?.toLowerCase().includes('.pdf') ? cert.verification_url : '');
+              const finalDrive = drive || (cert.verification_url?.toLowerCase().includes('drive.google.com') ? cert.verification_url : '');
+              const hasDoc = !!(finalPdf || finalDrive);
+
+              return (
+                <motion.div 
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -25 : 25 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                  key={cert.id} 
+                  className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-white/10 transition-colors"
+                >
+                  <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-purple-500/10 overflow-hidden flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform duration-300">
+                      {image ? (
+                        <img src={image} alt={cert.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <FiAward className="w-6 h-6" />
+                      )}
+                    </div>
+                    <div className="text-center sm:text-left flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-white leading-snug truncate">{cert.name}</h3>
+                      <p className="text-purple-300/80 text-xs font-semibold mt-1">{cert.organization}</p>
+                      {cert.issue_date && (
+                        <span className="text-[10px] text-gray-500 block mt-2">
+                          Issued: {new Date(cert.issue_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                    {hasDoc ? (
+                      <button
+                        onClick={() => setActiveCertModal({ ...cert, pdf: finalPdf, drive: finalDrive })}
+                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 text-purple-300 hover:text-white border border-purple-500/25 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                      >
+                        <span>Verify</span>
+                        <FiArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    ) : cert.verification_url ? (
+                      <a
+                        href={cert.verification_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                      >
+                        <span>Verify</span>
+                        <FiArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    ) : null}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1256,6 +1367,152 @@ export const Portfolio: React.FC = () => {
                   </button>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Certificate Options Modal */}
+      <AnimatePresence>
+        {activeCertModal && (
+          <div onClick={closeCertModal} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+            <motion.div 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className={`w-full transition-all duration-300 glass-panel border border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 relative space-y-6 ${showInlinePreview ? 'max-w-3xl' : 'max-w-sm text-center'}`}
+            >
+              {/* Close Button */}
+              <button 
+                onClick={closeCertModal} 
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+
+              <div className="flex flex-col items-center space-y-3">
+                <div className="p-3.5 rounded-2xl bg-purple-500/10 text-purple-400">
+                  <FiAward className="w-10 h-10 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-md font-bold text-white leading-snug">{activeCertModal.name}</h3>
+                  <p className="text-purple-300/80 text-xs font-semibold mt-1">{activeCertModal.organization}</p>
+                </div>
+              </div>
+
+              {showInlinePreview && previewBlobUrl ? (
+                <div className="space-y-4">
+                  <div className="w-full h-[60vh] bg-black/40 rounded-xl overflow-hidden border border-white/5 relative">
+                    <iframe
+                      src={`${previewBlobUrl}#toolbar=0`}
+                      className="w-full h-full border-none"
+                      title="Certificate PDF Preview"
+                    />
+                  </div>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setShowInlinePreview(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-all cursor-pointer"
+                    >
+                      Back to Options
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const link = document.createElement('a');
+                        link.href = previewBlobUrl;
+                        link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all cursor-pointer animate-pulse-glow"
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {/* Preview Option */}
+                  {activeCertModal.drive ? (
+                    <a
+                      href={activeCertModal.drive}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={closeCertModal}
+                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 cursor-pointer"
+                    >
+                      <FiEye className="w-4 h-4" />
+                      <span>Preview Certificate</span>
+                    </a>
+                  ) : activeCertModal.pdf ? (
+                    <button
+                      disabled={pdfLoading}
+                      onClick={() => handlePreviewClick(activeCertModal.pdf)}
+                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      {pdfLoading ? (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <FiEye className="w-4 h-4" />
+                      )}
+                      <span>{pdfLoading ? 'Loading Preview...' : 'Preview Certificate'}</span>
+                    </button>
+                  ) : null}
+
+                  {/* Download Option */}
+                  {activeCertModal.pdf ? (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(activeCertModal.pdf);
+                          const blob = await response.blob();
+                          const url = window.URL.createObjectURL(blob);
+                          const link = document.createElement('a');
+                          link.href = url;
+                          link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
+                          document.body.appendChild(link);
+                          link.click();
+                          link.remove();
+                          window.URL.revokeObjectURL(url);
+                        } catch (error) {
+                          window.open(activeCertModal.pdf, '_blank');
+                        }
+                        closeCertModal();
+                      }}
+                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
+                    >
+                      <FiDownload className="w-4 h-4 text-purple-400" />
+                      <span>Download PDF Document</span>
+                    </button>
+                  ) : activeCertModal.drive ? (
+                    <a
+                      href={activeCertModal.drive}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={closeCertModal}
+                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
+                    >
+                      <FiDownload className="w-4 h-4 text-purple-400" />
+                      <span>View & Download on Drive</span>
+                    </a>
+                  ) : null}
+
+                  {activeCertModal.verification_url && !activeCertModal.verification_url.toLowerCase().includes('drive.google.com') && (
+                    <a
+                      href={activeCertModal.verification_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={closeCertModal}
+                      className="flex items-center justify-center space-x-1.5 text-[10px] text-blue-400 hover:text-blue-300 font-semibold transition-colors mt-2"
+                    >
+                      <span>Go to official Verification page</span>
+                      <FiArrowUpRight className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              )}
             </motion.div>
           </div>
         )}

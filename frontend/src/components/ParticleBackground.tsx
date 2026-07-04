@@ -52,10 +52,10 @@ export const ParticleBackground: React.FC = () => {
       mouse.y = (e.clientY - canvas.height / 2) * 0.000015;
     };
 
-    // Track scroll to apply rotation momentum - set to 0.00000000002 for extremely subtle scroll drift
+    // Track scroll to apply rotation momentum - set to 0.00000000000002 for subtle scroll drift
     let scrollOffset = 0;
     const handleScroll = () => {
-      scrollOffset = window.scrollY * 0.00000000002; // Very small scroll multiplier
+      scrollOffset = window.scrollY * 0.00000000000002; // Configured scroll multiplier
     };
 
     const animate = () => {

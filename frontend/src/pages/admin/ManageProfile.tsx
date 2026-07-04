@@ -17,6 +17,9 @@ interface ProfileData {
     github?: string;
     linkedin?: string;
     portfolio?: string;
+    show_banner?: boolean;
+    interests?: string[];
+    languages?: string[];
   };
 }
 
@@ -47,6 +50,9 @@ export const ManageProfile: React.FC = () => {
   const [github, setGithub] = useState('');
   const [linkedin, setLinkedin] = useState('');
   const [portfolio, setPortfolio] = useState('');
+  const [showBanner, setShowBanner] = useState(true);
+  const [interestsText, setInterestsText] = useState('');
+  const [languagesText, setLanguagesText] = useState('');
 
   useEffect(() => {
     fetchProfile();
@@ -71,6 +77,9 @@ export const ManageProfile: React.FC = () => {
         setGithub(data.social_links?.github || '');
         setLinkedin(data.social_links?.linkedin || '');
         setPortfolio(data.social_links?.portfolio || '');
+        setShowBanner(data.social_links?.show_banner !== false);
+        setInterestsText(data.social_links?.interests?.join('\n') || '');
+        setLanguagesText(data.social_links?.languages?.join('\n') || '');
       }
     } catch (err: any) {
       console.error(err);
@@ -137,6 +146,9 @@ export const ManageProfile: React.FC = () => {
         github,
         linkedin,
         portfolio,
+        show_banner: showBanner,
+        interests: interestsText.split('\n').map(item => item.trim()).filter(Boolean),
+        languages: languagesText.split('\n').map(item => item.trim()).filter(Boolean),
       },
     };
 
@@ -236,6 +248,20 @@ export const ManageProfile: React.FC = () => {
                   className="block w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white focus:outline-none transition-all"
                 />
               )}
+            </div>
+
+            {/* Banner Visibility Toggle */}
+            <div className="p-4 border-b border-white/5 flex items-center justify-between text-xs">
+              <span className="font-semibold text-gray-400">Show Cover Banner in Frontend:</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showBanner}
+                  onChange={(e) => setShowBanner(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
+              </label>
             </div>
 
             {/* Profile Photo Wrapper */}
@@ -502,6 +528,44 @@ export const ManageProfile: React.FC = () => {
                   onChange={(e) => setPortfolio(e.target.value)}
                   placeholder="https://yourportfolio.com"
                   className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white focus:outline-none transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Interests & Languages Panel */}
+          <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-4">
+            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+              <FiInfo className="w-4.5 h-4.5 text-purple-400" />
+              <span>Interests & Languages Known (About Section)</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Interests */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  Interests (one per line)
+                </label>
+                <textarea
+                  value={interestsText}
+                  onChange={(e) => setInterestsText(e.target.value)}
+                  placeholder="e.g.&#10;Machine Learning & Neural Networks&#10;Business Intelligence & Dashboard Drafting"
+                  rows={5}
+                  className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white focus:outline-none transition-all resize-none"
+                />
+              </div>
+
+              {/* Languages */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  Languages Known (one per line)
+                </label>
+                <textarea
+                  value={languagesText}
+                  onChange={(e) => setLanguagesText(e.target.value)}
+                  placeholder="e.g.&#10;English (Professional)&#10;Hindi (Native)&#10;Odia (Conversational)"
+                  rows={5}
+                  className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white focus:outline-none transition-all resize-none"
                 />
               </div>
             </div>
