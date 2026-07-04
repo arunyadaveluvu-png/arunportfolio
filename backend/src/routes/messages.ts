@@ -80,7 +80,7 @@ router.post('/:id/reply', requireAuth, async (req: AuthenticatedRequest, res) =>
 
     // 2. Send email reply
     const mailOptions = {
-      from: `"Portfolio Admin" <${process.env.SMTP_USER || 'no-reply@example.com'}>`,
+      from: `"Arun Portfolio Admin" <arunyadaveluvu@gmail.com>`,
       to: message.email,
       subject: `Re: ${message.subject}`,
       text: `Hi ${message.name},
