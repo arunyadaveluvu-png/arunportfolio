@@ -201,8 +201,16 @@ export const ManageMessages: React.FC = () => {
                 <div className="flex items-start justify-between border-b border-white/5 pb-4">
                   <div>
                     <h3 className="text-md font-bold text-white tracking-tight">{selectedMessage.subject}</h3>
-                    <p className="text-purple-300 text-xs font-semibold mt-1">
-                      From: {selectedMessage.name} ({selectedMessage.email})
+                    <p className="text-purple-300 text-xs font-semibold mt-1 flex flex-wrap items-center gap-1">
+                      <span>From: {selectedMessage.name}</span>
+                      <a
+                        href={`mailto:${selectedMessage.email}?subject=${encodeURIComponent(`Re: ${selectedMessage.subject || 'Inquiry'}`)}`}
+                        className="text-blue-400 hover:text-blue-300 underline flex items-center space-x-1"
+                        title="Send email directly"
+                      >
+                        <span>({selectedMessage.email})</span>
+                        <FiMail className="w-3.5 h-3.5" />
+                      </a>
                     </p>
                     <span className="text-[9px] text-gray-500 block mt-2">
                       Received: {new Date(selectedMessage.created_at).toLocaleString()}
@@ -259,7 +267,14 @@ export const ManageMessages: React.FC = () => {
                     className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white placeholder-gray-600 focus:outline-none transition-all resize-none"
                   />
 
-                  <div className="flex items-center justify-end">
+                   <div className="flex items-center justify-end space-x-3">
+                    <a
+                      href={`mailto:${selectedMessage.email}?subject=${encodeURIComponent(`Re: ${selectedMessage.subject || 'Inquiry'}`)}&body=${encodeURIComponent(replyText)}`}
+                      className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
+                    >
+                      <FiMail className="w-4 h-4 text-purple-400" />
+                      <span>Reply via Email App</span>
+                    </a>
                     <button
                       type="submit"
                       disabled={sendingReply || !replyText}
