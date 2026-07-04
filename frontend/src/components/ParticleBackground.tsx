@@ -55,7 +55,7 @@ export const ParticleBackground: React.FC = () => {
     // Track scroll to apply rotation momentum - set to 0.00000000000002 for subtle scroll drift
     let scrollOffset = 0;
     const handleScroll = () => {
-      scrollOffset = window.scrollY * 0.00000000000002; // Configured scroll multiplier
+      scrollOffset = window.scrollY * 0.00000000002; // Configured scroll multiplier
     };
 
     const animate = () => {
