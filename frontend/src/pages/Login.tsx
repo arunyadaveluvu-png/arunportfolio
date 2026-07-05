@@ -147,6 +147,12 @@ export const Login: React.FC = () => {
           </button>
         </div>
       </div>
+      
+      <div className="absolute bottom-6 left-0 right-0 text-center z-10">
+        <p className="text-gray-400 text-xs font-medium tracking-tight">
+          Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
+        </p>
+      </div>
     </div>
   );
 };

@@ -82,12 +82,9 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between">
-          <p className="text-gray-500 text-xs">
-            &copy; {new Date().getFullYear()} Portfolio. All rights reserved.
-          </p>
-          <p className="text-gray-500 text-xs mt-2 sm:mt-0 flex items-center space-x-1">
-            <span>Designed with excellence.</span>
+        <div className="border-t border-white/5 pt-8 flex flex-col items-center justify-center">
+          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+            Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
           </p>
         </div>
       </div>

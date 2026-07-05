@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import { FiPlus, FiEdit, FiTrash2, FiBookOpen, FiX } from 'react-icons/fi';
 
+const parseYearAndType = (yearString: string) => {
+  if (!yearString) return { year: '', type: 'cgpa' };
+  if (yearString.includes('|')) {
+    const [year, type] = yearString.split('|');
+    return { year: year.trim(), type: type.trim() };
+  }
+  return { year: yearString.trim(), type: 'cgpa' };
+};
+
 interface Education {
   id: string;
   degree: string;
@@ -23,6 +32,7 @@ export const ManageEducation: React.FC = () => {
   const [university, setUniversity] = useState('');
   const [year, setYear] = useState('');
   const [cgpa, setCgpa] = useState<number | ''>('');
+  const [gradeType, setGradeType] = useState<'cgpa' | 'percentage' | 'gpa'>('cgpa');
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +59,7 @@ export const ManageEducation: React.FC = () => {
     setUniversity('');
     setYear('');
     setCgpa('');
+    setGradeType('cgpa');
     setError(null);
     setModalOpen(true);
   };
@@ -58,8 +69,15 @@ export const ManageEducation: React.FC = () => {
     setDegree(edu.degree);
     setCollege(edu.college);
     setUniversity(edu.university || '');
-    setYear(edu.year);
-    setCgpa(edu.cgpa || '');
+    
+    const parsed = parseYearAndType(edu.year);
+    setYear(parsed.year);
+    setGradeType(parsed.type as any);
+    if (parsed.type === 'percentage' && edu.cgpa) {
+      setCgpa(Number((edu.cgpa * 10).toFixed(2)));
+    } else {
+      setCgpa(edu.cgpa || '');
+    }
     setError(null);
     setModalOpen(true);
   };
@@ -69,12 +87,21 @@ export const ManageEducation: React.FC = () => {
     setSubmitting(true);
     setError(null);
 
+    let dbCgpa: number | null = null;
+    if (cgpa !== '') {
+      if (gradeType === 'percentage') {
+        dbCgpa = Number((Number(cgpa) / 10).toFixed(4));
+      } else {
+        dbCgpa = Number(cgpa);
+      }
+    }
+
     const payload = {
       degree,
       college,
       university: university || null,
-      year,
-      cgpa: cgpa === '' ? null : Number(cgpa),
+      year: `${year}|${gradeType}`,
+      cgpa: dbCgpa,
     };
 
     try {
@@ -126,27 +153,34 @@ export const ManageEducation: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {eduList.map((edu) => (
-            <div key={edu.id} className="glass-panel p-6 rounded-2xl border border-white/5 flex items-start justify-between group">
-              <div className="flex space-x-4">
-                <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400">
-                  <FiBookOpen className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-md font-bold text-white tracking-tight leading-snug">{edu.degree}</h3>
-                  <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
-                  {edu.university && <p className="text-gray-400 text-xs">{edu.university}</p>}
-                  
-                  <div className="flex items-center space-x-4 mt-3 text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
-                    <span>Year: {edu.year}</span>
-                    {edu.cgpa && (
-                      <span className="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/10 font-mono">
-                        CGPA: {Number(edu.cgpa).toFixed(2)}
-                      </span>
-                    )}
+          {eduList.map((edu) => {
+            const parsed = parseYearAndType(edu.year);
+            return (
+              <div key={edu.id} className="glass-panel p-6 rounded-2xl border border-white/5 flex items-start justify-between group">
+                <div className="flex space-x-4">
+                  <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400">
+                    <FiBookOpen className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-md font-bold text-white tracking-tight leading-snug">{edu.degree}</h3>
+                    <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
+                    {edu.university && <p className="text-gray-400 text-xs">{edu.university}</p>}
+                    
+                    <div className="flex items-center space-x-4 mt-3 text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
+                      <span>Year: {parsed.year}</span>
+                      {edu.cgpa && (
+                        <span className="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/10 font-mono">
+                          {parsed.type === 'percentage' 
+                            ? `Percentage: ${(Number(edu.cgpa) * 10).toFixed(1)}%` 
+                            : parsed.type === 'gpa' 
+                              ? `GPA: ${Number(edu.cgpa).toFixed(2)}/4`
+                              : `CGPA: ${Number(edu.cgpa).toFixed(2)}/10`
+                          }
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
               <div className="flex space-x-2">
                 <button
@@ -165,7 +199,8 @@ export const ManageEducation: React.FC = () => {
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
 
@@ -227,6 +262,30 @@ export const ManageEducation: React.FC = () => {
                 />
               </div>
 
+              {/* Grade Type */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Grade Scale System</label>
+                <div className="flex space-x-2">
+                  {(['cgpa', 'percentage', 'gpa'] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => {
+                        setGradeType(type);
+                        setCgpa(''); // Clear current value to prevent invalid scale
+                      }}
+                      className={`flex-1 py-2 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all border ${
+                        gradeType === type
+                          ? 'bg-purple-600/20 text-purple-300 border-purple-500/25'
+                          : 'bg-white/5 text-gray-400 hover:bg-white/10 border-transparent'
+                      }`}
+                    >
+                      {type === 'cgpa' ? 'CGPA (10)' : type === 'percentage' ? 'Percent (100)' : 'GPA (4)'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 {/* Year */}
                 <div>
@@ -243,15 +302,17 @@ export const ManageEducation: React.FC = () => {
 
                 {/* CGPA */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">CGPA / Percentage</label>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    {gradeType === 'percentage' ? 'Percentage' : gradeType === 'gpa' ? 'GPA (out of 4)' : 'CGPA (out of 10)'}
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     min="0"
-                    max="100"
+                    max={gradeType === 'percentage' ? '100' : gradeType === 'gpa' ? '4' : '10'}
                     value={cgpa}
                     onChange={(e) => setCgpa(e.target.value === '' ? '' : Number(e.target.value))}
-                    placeholder="e.g. 9.12"
+                    placeholder={gradeType === 'percentage' ? 'e.g. 85.50' : gradeType === 'gpa' ? 'e.g. 3.80' : 'e.g. 9.12'}
                     className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500/30 transition-all"
                   />
                 </div>

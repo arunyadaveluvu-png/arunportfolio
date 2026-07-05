@@ -89,6 +89,15 @@ const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   );
 };
 
+const parseYearAndType = (yearString: string) => {
+  if (!yearString) return { year: '', type: 'cgpa' };
+  if (yearString.includes('|')) {
+    const [year, type] = yearString.split('|');
+    return { year: year.trim(), type: type.trim() };
+  }
+  return { year: yearString.trim(), type: 'cgpa' };
+};
+
 export const Portfolio: React.FC = () => {
   // Database States
   const [profile, setProfile] = useState<any>(null);
@@ -364,6 +373,284 @@ export const Portfolio: React.FC = () => {
   const typingWords = profile?.title ? profile.title.split('|').map((t: string) => t.trim()) : defaultWords;
 
   const showBanner = profile?.social_links?.show_banner !== false;
+
+  // Immersive sub-pages for Projects and Certificates
+  if (selectedProject) {
+    return (
+      <div className="relative min-h-screen bg-[#030014] text-gray-200 flex flex-col justify-between z-50">
+        {/* Particle Canvas */}
+        <div className="absolute inset-0 z-0">
+          <ParticleBackground />
+        </div>
+
+        {/* Decorative Orbs */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-purple-900/10 via-blue-900/5 to-transparent blur-[120px] pointer-events-none z-0"></div>
+
+        {/* Header with Back Button */}
+        <header className="sticky top-0 left-0 w-full z-50 glass-panel py-4 px-6 flex items-center justify-between border-b border-white/5 backdrop-blur-md">
+          <button
+            onClick={() => setSelectedProject(null)}
+            className="flex items-center space-x-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold hover:bg-purple-500/20 hover:text-white transition-all duration-300 cursor-pointer"
+          >
+            <span>&larr; Back to Portfolio</span>
+          </button>
+          <span className="text-sm font-extrabold tracking-widest bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent uppercase">
+            Project Overview
+          </span>
+          <div className="w-28 hidden sm:block"></div> {/* spacer */}
+        </header>
+
+        {/* Project Content */}
+        <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 py-12 space-y-8 animate-fade-in">
+          {/* Main Card with Image */}
+          <div className="glass-panel rounded-3xl overflow-hidden border border-white/10 relative h-[40vh] sm:h-[50vh] flex items-center justify-center">
+            {selectedProject.image_url ? (
+              <img
+                src={selectedProject.image_url}
+                alt={selectedProject.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-purple-950/20 flex items-center justify-center text-purple-300 font-bold uppercase tracking-wider">
+                {selectedProject.title}
+              </div>
+            )}
+            <span className="absolute bottom-6 left-6 px-4 py-2 rounded-full bg-black/70 backdrop-blur-md text-xs font-bold text-purple-300 border border-white/15 uppercase tracking-wider">
+              {selectedProject.category}
+            </span>
+          </div>
+
+          <div className="space-y-6">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{selectedProject.title}</h1>
+            {selectedProject.completion_date && (
+              <div className="flex items-center space-x-2 text-sm text-gray-500 mt-2 font-medium">
+                <FiCalendar className="w-4 h-4" />
+                <span>Completed: {new Date(selectedProject.completion_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}</span>
+              </div>
+            )}
+
+            <div className="border-t border-white/5 pt-6 space-y-3">
+              <h2 className="text-sm font-bold text-purple-300 tracking-wider uppercase">Project Details</h2>
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                {selectedProject.description}
+              </p>
+            </div>
+
+            {selectedProject.technologies && (
+              <div className="border-t border-white/5 pt-6 space-y-3">
+                <h2 className="text-sm font-bold text-purple-300 tracking-wider uppercase">Technologies Used</h2>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.technologies.map((tech: string, i: number) => (
+                    <span key={i} className="text-xs px-3.5 py-1.5 rounded-full bg-white/5 text-gray-300 border border-white/5 font-semibold">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="border-t border-white/5 pt-8 flex items-center space-x-4">
+              {selectedProject.github_url && (
+                <a
+                  href={selectedProject.github_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold tracking-wider uppercase transition-all border border-white/10 flex items-center space-x-2 cursor-pointer"
+                >
+                  <FiGithub className="w-4 h-4" />
+                  <span>GitHub Repository</span>
+                </a>
+              )}
+              {selectedProject.live_url && (
+                <a
+                  href={selectedProject.live_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold tracking-wider uppercase transition-all flex items-center space-x-2 shadow-lg shadow-purple-600/20 cursor-pointer"
+                >
+                  <FiLink className="w-4 h-4" />
+                  <span>Live Demo</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </main>
+
+        {/* Unified Copyright Footer */}
+        <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
+          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+            Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
+  if (activeCertModal) {
+    return (
+      <div className="relative min-h-screen bg-[#030014] text-gray-200 flex flex-col justify-between z-50">
+        {/* Particle Canvas */}
+        <div className="absolute inset-0 z-0">
+          <ParticleBackground />
+        </div>
+
+        {/* Decorative Orbs */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-purple-900/10 via-blue-900/5 to-transparent blur-[120px] pointer-events-none z-0"></div>
+
+        {/* Header with Back Button */}
+        <header className="sticky top-0 left-0 w-full z-50 glass-panel py-4 px-6 flex items-center justify-between border-b border-white/5 backdrop-blur-md">
+          <button
+            onClick={closeCertModal}
+            className="flex items-center space-x-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold hover:bg-purple-500/20 hover:text-white transition-all duration-300 cursor-pointer"
+          >
+            <span>&larr; Back to Portfolio</span>
+          </button>
+          <span className="text-sm font-extrabold tracking-widest bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent uppercase">
+            Certificate Credentials
+          </span>
+          <div className="w-28 hidden sm:block"></div> {/* spacer */}
+        </header>
+
+        {/* Certificate Content */}
+        <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 py-12 space-y-8 animate-fade-in flex flex-col justify-center">
+          <div className="glass-panel p-8 rounded-3xl border border-white/10 space-y-6 flex-1 flex flex-col justify-between">
+            <div className="flex items-start justify-between border-b border-white/5 pb-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 flex-shrink-0">
+                  <FiAward className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-white tracking-tight">{activeCertModal.name}</h3>
+                  <p className="text-purple-300 text-sm font-semibold mt-1">{activeCertModal.organization}</p>
+                </div>
+              </div>
+            </div>
+
+            {showInlinePreview && previewBlobUrl ? (
+              <div className="space-y-6 flex-1 flex flex-col">
+                <div className="w-full flex-1 min-h-[50vh] bg-black/40 rounded-xl overflow-hidden border border-white/5 relative">
+                  <iframe
+                    src={`${previewBlobUrl}#toolbar=0`}
+                    className="w-full h-full border-none absolute inset-0"
+                    title="Certificate PDF Preview"
+                  />
+                </div>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowInlinePreview(false)}
+                    className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-all cursor-pointer"
+                  >
+                    Back to Options
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const link = document.createElement('a');
+                      link.href = previewBlobUrl;
+                      link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
+                      document.body.appendChild(link);
+                      link.click();
+                      link.remove();
+                    }}
+                    className="flex-1 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all cursor-pointer animate-pulse-glow"
+                  >
+                    Download PDF Document
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 max-w-md mx-auto w-full py-12">
+                {/* Preview Option */}
+                {activeCertModal.drive ? (
+                  <a
+                    href={activeCertModal.drive}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={closeCertModal}
+                    className="flex items-center justify-center space-x-2 w-full py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 cursor-pointer text-center text-decoration-none"
+                  >
+                    <FiEye className="w-4 h-4" />
+                    <span>Preview Certificate (Google Drive)</span>
+                  </a>
+                ) : activeCertModal.pdf ? (
+                  <button
+                    disabled={pdfLoading}
+                    onClick={() => handlePreviewClick(activeCertModal.pdf)}
+                    className="flex items-center justify-center space-x-2 w-full py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {pdfLoading ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <FiEye className="w-4 h-4" />
+                    )}
+                    <span>{pdfLoading ? 'Loading Preview...' : 'Preview Certificate'}</span>
+                  </button>
+                ) : null}
+
+                {/* Download Option */}
+                {activeCertModal.pdf ? (
+                  <button
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(activeCertModal.pdf);
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        window.URL.revokeObjectURL(url);
+                      } catch (error) {
+                        window.open(activeCertModal.pdf, '_blank');
+                      }
+                      closeCertModal();
+                    }}
+                    className="flex items-center justify-center space-x-2 w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
+                  >
+                    <FiDownload className="w-4 h-4 text-purple-400" />
+                    <span>Download PDF Document</span>
+                  </button>
+                ) : activeCertModal.drive ? (
+                  <a
+                    href={activeCertModal.drive}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={closeCertModal}
+                    className="flex items-center justify-center space-x-2 w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer text-center text-decoration-none"
+                  >
+                    <FiDownload className="w-4 h-4 text-purple-400" />
+                    <span>View & Download on Drive</span>
+                  </a>
+                ) : null}
+
+                {activeCertModal.verification_url && !activeCertModal.verification_url.toLowerCase().includes('drive.google.com') && (
+                  <a
+                    href={activeCertModal.verification_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={closeCertModal}
+                    className="flex items-center justify-center space-x-1.5 text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors mt-4 text-center mx-auto"
+                  >
+                    <span>Go to official Verification page</span>
+                    <FiArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </main>
+
+        {/* Unified Copyright Footer */}
+        <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
+          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+            Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
+          </p>
+        </footer>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-[#030014] overflow-x-hidden text-gray-200">
@@ -970,7 +1257,7 @@ export const Portfolio: React.FC = () => {
             <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {certs.map((cert, idx) => {
               const { image, pdf, drive } = (() => {
                 if (!cert.image_url) return { image: '', pdf: '', drive: '' };
@@ -999,45 +1286,48 @@ export const Portfolio: React.FC = () => {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6 }}
                   key={cert.id} 
-                  className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-white/10 transition-colors"
+                  className="glass-panel p-5 rounded-2xl border border-white/5 flex flex-row items-center justify-between gap-4 group hover:border-white/10 transition-colors w-full"
                 >
-                  <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-purple-500/10 overflow-hidden flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex flex-row items-center space-x-4 flex-1 min-w-0">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 overflow-hidden flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform duration-300">
                       {image ? (
                         <img src={image} alt={cert.name} className="w-full h-full object-cover" />
                       ) : (
-                        <FiAward className="w-6 h-6" />
+                        <FiAward className="w-5 h-5" />
                       )}
                     </div>
-                    <div className="text-center sm:text-left flex-1 min-w-0">
-                      <h3 className="text-sm font-bold text-white leading-snug truncate">{cert.name}</h3>
-                      <p className="text-purple-300/80 text-xs font-semibold mt-1">{cert.organization}</p>
+                    <div className="text-left flex-1 min-w-0">
+                      <h3 className="text-xs sm:text-sm font-bold text-white leading-snug break-words whitespace-normal">{cert.name}</h3>
+                      <p className="text-purple-300/80 text-[10px] sm:text-xs font-semibold mt-1 truncate">{cert.organization}</p>
                       {cert.issue_date && (
-                        <span className="text-[10px] text-gray-500 block mt-2">
+                        <span className="text-[9px] sm:text-[10px] text-gray-500 block mt-1.5">
                           Issued: {new Date(cert.issue_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                  <div className="flex-shrink-0 flex items-center">
                     {hasDoc ? (
                       <button
-                        onClick={() => setActiveCertModal({ ...cert, pdf: finalPdf, drive: finalDrive })}
-                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 text-purple-300 hover:text-white border border-purple-500/25 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: 'instant' });
+                          setActiveCertModal({ ...cert, pdf: finalPdf, drive: finalDrive });
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 text-purple-300 hover:text-white border border-purple-500/25 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
                       >
                         <span>Verify</span>
-                        <FiArrowUpRight className="w-3.5 h-3.5" />
+                        <FiArrowUpRight className="w-3 h-3" />
                       </button>
                     ) : cert.verification_url ? (
                       <a
                         href={cert.verification_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                        className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
                       >
                         <span>Verify</span>
-                        <FiArrowUpRight className="w-3.5 h-3.5" />
+                        <FiArrowUpRight className="w-3 h-3" />
                       </a>
                     ) : null}
                   </div>
@@ -1059,39 +1349,47 @@ export const Portfolio: React.FC = () => {
           </div>
 
           <div className="relative border-l border-white/10 ml-4 md:ml-8 space-y-12">
-            {education.map((edu, idx) => (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
-                key={edu.id} 
-                className="relative pl-8 md:pl-10"
-              >
-                {/* Timeline node dot */}
-                <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-[#030014] shadow-lg shadow-purple-600/30"></div>
-                
-                <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/10 w-fit">
-                      {edu.year}
-                    </span>
-                    {edu.cgpa && (
-                      <span className="text-xs text-emerald-400 font-bold font-mono">
-                        CGPA: {Number(edu.cgpa).toFixed(2)}
+            {education.map((edu, idx) => {
+              const parsed = parseYearAndType(edu.year);
+              return (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: idx * 0.15 }}
+                  key={edu.id} 
+                  className="relative pl-8 md:pl-10"
+                >
+                  {/* Timeline node dot */}
+                  <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-[#030014] shadow-lg shadow-purple-600/30"></div>
+                  
+                  <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/10 w-fit">
+                        {parsed.year}
                       </span>
-                    )}
+                      {edu.cgpa && (
+                        <span className="text-xs text-emerald-400 font-bold font-mono">
+                          {parsed.type === 'percentage' 
+                            ? `Percentage: ${(Number(edu.cgpa) * 10).toFixed(1)}%` 
+                            : parsed.type === 'gpa' 
+                              ? `GPA: ${Number(edu.cgpa).toFixed(2)}/4`
+                              : `CGPA: ${Number(edu.cgpa).toFixed(2)}/10`
+                          }
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-md font-bold text-white leading-snug">{edu.degree}</h3>
+                      <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
+                      {edu.university && (
+                        <p className="text-gray-500 text-xs mt-0.5">{edu.university}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-md font-bold text-white leading-snug">{edu.degree}</h3>
-                    <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
-                    {edu.university && (
-                      <p className="text-gray-500 text-xs mt-0.5">{edu.university}</p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1265,258 +1563,6 @@ export const Portfolio: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* ==========================================
-          PROJECT DETAILS OVERLAY MODAL
-          ========================================== */}
-      <AnimatePresence>
-        {selectedProject && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <motion.div 
-              initial={{ opacity: 0, rotateY: 90, scale: 0.8 }}
-              animate={{ opacity: 1, rotateY: 0, scale: 1 }}
-              exit={{ opacity: 0, rotateY: -90, scale: 0.8 }}
-              transition={{ type: 'spring', damping: 22, stiffness: 120 }}
-              style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
-              className="w-full max-w-3xl bg-[#0b091c] border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
-            >
-              {/* Modal header details */}
-              <div className="relative h-60 sm:h-72 bg-gray-900 overflow-hidden">
-                {selectedProject.image_url ? (
-                  <img src={selectedProject.image_url} alt={selectedProject.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm font-bold bg-purple-950/15">Case Study</div>
-                )}
-                
-                <button 
-                  onClick={() => setSelectedProject(null)} 
-                  className="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/80 text-gray-300 hover:text-white transition-all cursor-pointer border border-white/10"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
-
-                <span className="absolute bottom-4 left-4 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold text-purple-300 border border-white/15 uppercase tracking-wider">
-                  {selectedProject.category}
-                </span>
-              </div>
-
-              {/* Modal contents */}
-              <div className="p-6 sm:p-8 space-y-6">
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">{selectedProject.title}</h3>
-                  {selectedProject.completion_date && (
-                    <div className="flex items-center space-x-1.5 text-xs text-gray-500 mt-2 font-medium">
-                      <FiCalendar className="w-3.5 h-3.5" />
-                      <span>Completed: {new Date(selectedProject.completion_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Overview</h4>
-                  <p className="text-gray-300 text-xs leading-relaxed whitespace-pre-line">
-                    {selectedProject.description}
-                  </p>
-                </div>
-
-                {selectedProject.technologies && (
-                  <div className="space-y-2">
-                    <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Technologies Used</h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedProject.technologies.map((tech: string, i: number) => (
-                        <span key={i} className="text-[10px] px-2.5 py-1 rounded bg-white/5 text-gray-300 border border-white/5 font-medium">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Footer action buttons */}
-                <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center space-x-3 w-full sm:w-auto">
-                    {selectedProject.github_url && (
-                      <a 
-                        href={selectedProject.github_url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold transition-all border border-white/10 flex items-center justify-center space-x-1.5"
-                      >
-                        <FiGithub className="w-4 h-4" />
-                        <span>GitHub Link</span>
-                      </a>
-                    )}
-                    {selectedProject.live_url && (
-                      <a 
-                        href={selectedProject.live_url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center justify-center space-x-1.5 shadow-lg shadow-purple-600/10"
-                      >
-                        <FiLink className="w-4 h-4" />
-                        <span>Live Demo</span>
-                      </a>
-                    )}
-                  </div>
-
-                  <button 
-                    onClick={() => setSelectedProject(null)}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all text-xs font-semibold text-center cursor-pointer"
-                  >
-                    Close Modal
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Certificate Options Modal */}
-      <AnimatePresence>
-        {activeCertModal && (
-          <div onClick={closeCertModal} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-            <motion.div 
-              onClick={(e) => e.stopPropagation()}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className={`w-full transition-all duration-300 glass-panel border border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 relative space-y-6 ${showInlinePreview ? 'max-w-3xl' : 'max-w-sm text-center'}`}
-            >
-              {/* Close Button */}
-              <button 
-                onClick={closeCertModal} 
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors cursor-pointer"
-              >
-                <FiX className="w-5 h-5" />
-              </button>
-
-              <div className="flex flex-col items-center space-y-3">
-                <div className="p-3.5 rounded-2xl bg-purple-500/10 text-purple-400">
-                  <FiAward className="w-10 h-10 animate-pulse" />
-                </div>
-                <div>
-                  <h3 className="text-md font-bold text-white leading-snug">{activeCertModal.name}</h3>
-                  <p className="text-purple-300/80 text-xs font-semibold mt-1">{activeCertModal.organization}</p>
-                </div>
-              </div>
-
-              {showInlinePreview && previewBlobUrl ? (
-                <div className="space-y-4">
-                  <div className="w-full h-[60vh] bg-black/40 rounded-xl overflow-hidden border border-white/5 relative">
-                    <iframe
-                      src={`${previewBlobUrl}#toolbar=0`}
-                      className="w-full h-full border-none"
-                      title="Certificate PDF Preview"
-                    />
-                  </div>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => setShowInlinePreview(false)}
-                      className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-all cursor-pointer"
-                    >
-                      Back to Options
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const link = document.createElement('a');
-                        link.href = previewBlobUrl;
-                        link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
-                        document.body.appendChild(link);
-                        link.click();
-                        link.remove();
-                      }}
-                      className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all cursor-pointer animate-pulse-glow"
-                    >
-                      Download PDF
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {/* Preview Option */}
-                  {activeCertModal.drive ? (
-                    <a
-                      href={activeCertModal.drive}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={closeCertModal}
-                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 cursor-pointer"
-                    >
-                      <FiEye className="w-4 h-4" />
-                      <span>Preview Certificate</span>
-                    </a>
-                  ) : activeCertModal.pdf ? (
-                    <button
-                      disabled={pdfLoading}
-                      onClick={() => handlePreviewClick(activeCertModal.pdf)}
-                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                    >
-                      {pdfLoading ? (
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <FiEye className="w-4 h-4" />
-                      )}
-                      <span>{pdfLoading ? 'Loading Preview...' : 'Preview Certificate'}</span>
-                    </button>
-                  ) : null}
-
-                  {/* Download Option */}
-                  {activeCertModal.pdf ? (
-                    <button
-                      onClick={async () => {
-                        try {
-                          const response = await fetch(activeCertModal.pdf);
-                          const blob = await response.blob();
-                          const url = window.URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.setAttribute('download', `${activeCertModal.name.replace(/\s+/g, '_')}_Certificate.pdf`);
-                          document.body.appendChild(link);
-                          link.click();
-                          link.remove();
-                          window.URL.revokeObjectURL(url);
-                        } catch (error) {
-                          window.open(activeCertModal.pdf, '_blank');
-                        }
-                        closeCertModal();
-                      }}
-                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
-                    >
-                      <FiDownload className="w-4 h-4 text-purple-400" />
-                      <span>Download PDF Document</span>
-                    </button>
-                  ) : activeCertModal.drive ? (
-                    <a
-                      href={activeCertModal.drive}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={closeCertModal}
-                      className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold text-xs transition-all duration-300 cursor-pointer"
-                    >
-                      <FiDownload className="w-4 h-4 text-purple-400" />
-                      <span>View & Download on Drive</span>
-                    </a>
-                  ) : null}
-
-                  {activeCertModal.verification_url && !activeCertModal.verification_url.toLowerCase().includes('drive.google.com') && (
-                    <a
-                      href={activeCertModal.verification_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={closeCertModal}
-                      className="flex items-center justify-center space-x-1.5 text-[10px] text-blue-400 hover:text-blue-300 font-semibold transition-colors mt-2"
-                    >
-                      <span>Go to official Verification page</span>
-                      <FiArrowUpRight className="w-3 h-3" />
-                    </a>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

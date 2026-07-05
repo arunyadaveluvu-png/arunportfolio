@@ -139,8 +139,15 @@ export const AdminLayout: React.FC = () => {
         </header>
 
         {/* Dynamic Nested Page Content */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          <Outlet />
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto flex flex-col justify-between">
+          <div className="flex-1">
+            <Outlet />
+          </div>
+          <footer className="mt-16 pt-6 border-t border-white/5 text-center">
+            <p className="text-gray-400 text-xs font-medium tracking-tight">
+              Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
+            </p>
+          </footer>
         </main>
       </div>
     </div>
