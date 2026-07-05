@@ -75,11 +75,31 @@ const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
     setRotate({ x: 0, y: 0 });
   };
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const box = card.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - box.left - box.width / 2;
+    const y = touch.clientY - box.top - box.height / 2;
+    const factor = 8; // rotation factor
+    setRotate({
+      x: -(y / (box.height / 2)) * factor,
+      y: (x / (box.width / 2)) * factor,
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setRotate({ x: 0, y: 0 });
+  };
+
   return (
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       className={`transition-transform duration-200 ease-out preserve-3d ${className}`}
       style={{
         transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
@@ -393,44 +413,48 @@ export const Portfolio: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
                   <div className="lg:col-span-2 space-y-6">
                     <h3 className="text-xl font-bold text-white tracking-tight">My Journey</h3>
-                    <p className="text-gray-400 text-sm sm:text-md leading-relaxed whitespace-pre-line">
+                    <p className="text-gray-200 text-sm sm:text-md leading-relaxed whitespace-pre-line">
                       {profile?.biography || 'I am a highly motivated student/professional looking to build a career in data engineering, machine learning research, and front-end development. My objective is to leverage mathematical models and analytical applications to build software assets that resolve tangible real-world inquiries.'}
                     </p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
-                      <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
-                        <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Interests</h4>
-                        <ul className="text-gray-400 text-xs space-y-1.5 animate-fade-in">
+                      <div className="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+                        <h4 className="text-xs font-bold text-purple-300 uppercase tracking-widest">Interests</h4>
+                        <div className="flex flex-wrap gap-2 animate-fade-in">
                           {profile?.social_links?.interests && profile.social_links.interests.length > 0 ? (
                             profile.social_links.interests.map((interest: string, idx: number) => (
-                              <li key={idx}>• {interest}</li>
+                              <span key={idx} className="text-[10px] px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-200 border border-purple-500/25 font-semibold">
+                                {interest}
+                              </span>
                             ))
                           ) : (
                             <>
-                              <li>• Machine Learning & Neural Networks</li>
-                              <li>• Business Intelligence & Dashboard Drafting</li>
-                              <li>• Quantitative Trading Algorithms</li>
-                              <li>• Full-Stack App Engineering</li>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-200 border border-purple-500/25 font-semibold">Machine Learning & Neural Networks</span>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-200 border border-purple-500/25 font-semibold">Business Intelligence & Dashboard Drafting</span>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-200 border border-purple-500/25 font-semibold">Quantitative Trading Algorithms</span>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-200 border border-purple-500/25 font-semibold">Full-Stack App Engineering</span>
                             </>
                           )}
-                        </ul>
+                        </div>
                       </div>
                       
-                      <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
-                        <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Languages Known</h4>
-                        <ul className="text-gray-400 text-xs space-y-1.5 flex flex-wrap gap-x-4 gap-y-1.5 animate-fade-in">
+                      <div className="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+                        <h4 className="text-xs font-bold text-blue-300 uppercase tracking-widest">Languages Known</h4>
+                        <div className="flex flex-wrap gap-2 animate-fade-in">
                           {profile?.social_links?.languages && profile.social_links.languages.length > 0 ? (
                             profile.social_links.languages.map((lang: string, idx: number) => (
-                              <li key={idx}>• {lang}</li>
+                              <span key={idx} className="text-[10px] px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-200 border border-blue-500/25 font-semibold">
+                                {lang}
+                              </span>
                             ))
                           ) : (
                             <>
-                              <li>• English (Professional)</li>
-                              <li>• Hindi (Native)</li>
-                              <li>• Odia (Conversational)</li>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-200 border border-blue-500/25 font-semibold">English (Professional)</span>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-200 border border-blue-500/25 font-semibold">Hindi (Native)</span>
+                              <span className="text-[10px] px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-200 border border-blue-500/25 font-semibold">Odia (Conversational)</span>
                             </>
                           )}
-                        </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -503,13 +527,13 @@ export const Portfolio: React.FC = () => {
                               {catSkills.map((skill) => (
                                 <div key={skill.id} className="space-y-1.5">
                                   <div className="flex items-center justify-between text-xs font-semibold">
-                                    <div className="flex items-center space-x-2 text-gray-300">
+                                    <div className="flex items-center space-x-2 text-gray-100">
                                       <SkillIcon name={skill.icon_name} className="w-4 h-4 text-blue-400" />
                                       <span>{skill.name}</span>
                                     </div>
-                                    <span className="text-purple-400">{skill.proficiency}%</span>
+                                    <span className="text-purple-300 font-bold">{skill.proficiency}%</span>
                                   </div>
-                                  <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden border border-white/5">
+                                  <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden border border-white/10">
                                     <div 
                                       className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full"
                                       style={{ width: `${skill.proficiency}%` }}
@@ -730,12 +754,12 @@ export const Portfolio: React.FC = () => {
                               {project.technologies && (
                                 <div className="flex flex-wrap gap-1.5 mt-4" style={{ transform: 'translateZ(20px)' }}>
                                   {project.technologies.slice(0, 4).map((tech: string, i: number) => (
-                                    <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/5">
+                                    <span key={i} className="text-[10px] px-2.5 py-1 rounded bg-white/10 text-gray-200 border border-white/10">
                                       {tech}
                                     </span>
                                   ))}
                                   {project.technologies.length > 4 && (
-                                    <span className="text-[9px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10">
+                                    <span className="text-[10px] px-2.5 py-1 rounded bg-purple-500/20 text-purple-200 border border-purple-500/20 font-bold">
                                       +{project.technologies.length - 4} More
                                     </span>
                                   )}
