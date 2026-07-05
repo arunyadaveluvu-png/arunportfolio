@@ -359,25 +359,6 @@ export const Portfolio: React.FC = () => {
     }
   };
 
-  const handleDownloadResume = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!profile?.resume_url) return;
-    try {
-      const response = await fetch(profile.resume_url);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'Arun_Resume.pdf');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      window.open(profile.resume_url, '_blank');
-    }
-  };
-
   // Group skills by category
   const skillCategories = ['Programming', 'Web Development', 'Database', 'Data Analytics', 'AI & Machine Learning', 'Tools'];
   
@@ -1527,37 +1508,17 @@ export const Portfolio: React.FC = () => {
               View Projects
             </motion.button>
             {profile?.resume_url && (
-              <>
-                <motion.a 
-                  href={profile.resume_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
-                  className="w-full sm:w-auto px-5 py-3 rounded-full bg-white/5 hover:bg-white/10 text-white font-semibold text-xs transition-all duration-300 border border-white/10 text-center tracking-wider flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <FiEye className="w-4 h-4 text-blue-400" />
-                  <span>View Resume</span>
-                </motion.a>
-                <motion.button 
-                  onClick={handleDownloadResume}
-                  whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
-                  className="w-full sm:w-auto px-5 py-3 rounded-full bg-purple-600/10 hover:bg-purple-600 text-purple-300 hover:text-white font-semibold text-xs transition-all duration-300 border border-purple-500/25 hover:border-transparent text-center tracking-wider flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <FiDownload className="w-4 h-4" />
-                  <span>Download Resume</span>
-                </motion.button>
-              </>
+              <motion.a 
+                href={profile.resume_url}
+                target="_blank"
+                rel="noreferrer"
+                whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
+                className="w-full sm:w-auto px-5 py-3 rounded-full bg-white/5 hover:bg-white/10 text-white font-semibold text-xs transition-all duration-300 border border-white/10 text-center tracking-wider flex items-center justify-center space-x-2 cursor-pointer"
+              >
+                <FiEye className="w-4 h-4 text-blue-400" />
+                <span>View Resume</span>
+              </motion.a>
             )}
-            <motion.button 
-              onClick={() => {
-                setSearchParams({ section: 'contact' });
-                window.scrollTo({ top: 0, behavior: 'instant' });
-              }}
-              whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
-              className="w-full sm:w-auto px-6 py-3 rounded-full bg-transparent hover:text-purple-300 text-gray-400 font-semibold text-xs transition-all duration-300 text-center tracking-wider cursor-pointer"
-            >
-              Contact Me
-            </motion.button>
           </motion.div>
         </div>
       </section>
