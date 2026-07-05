@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowUp, FiGithub, FiLinkedin, FiMail, FiMapPin } from 'react-icons/fi';
+import { FiArrowUp, FiMail, FiMapPin } from 'react-icons/fi';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -67,17 +68,19 @@ export const Footer: React.FC = () => {
                 href="https://github.com/arunyadaveluvu-png"
                 target="_blank"
                 rel="noreferrer"
-                className="p-2 rounded-full bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300"
+                className="p-2 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 transition-all duration-300 shadow-md shadow-white/5 flex items-center justify-center cursor-pointer"
+                title="GitHub Profile"
               >
-                <FiGithub className="w-5 h-5" />
+                <FaGithub className="w-5 h-5" />
               </a>
               <a
                 href="https://www.linkedin.com/in/arun-kumar-yeluvu-0b4687373"
                 target="_blank"
                 rel="noreferrer"
-                className="p-2 rounded-full bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300"
+                className="p-2 rounded-full bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-[#0a66c2]/30 transition-all duration-300 shadow-md shadow-[#0a66c2]/10 flex items-center justify-center cursor-pointer"
+                title="LinkedIn Profile"
               >
-                <FiLinkedin className="w-5 h-5" />
+                <FaLinkedin className="w-5 h-5" />
               </a>
             </div>
           </div>

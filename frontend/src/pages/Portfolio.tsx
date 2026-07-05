@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { ParticleBackground } from '../components/ParticleBackground';
 import { SkillIcon } from '../components/SkillIcon';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { 
-  FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiLink, 
+  FiMail, FiPhone, FiMapPin, FiLink, 
   FiSearch, FiArrowRight, FiFileText, FiAward, FiBookOpen, 
   FiCpu, FiSend, FiCheck, FiCalendar, FiArrowUpRight, FiHeart,
   FiX, FiEye, FiDownload
@@ -484,13 +485,13 @@ export const Portfolio: React.FC = () => {
 
                     <div className="flex space-x-3 pt-4 border-t border-white/5">
                       {profile?.social_links?.github && (
-                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                          <FiGithub className="w-4 h-4" />
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-white/5" title="GitHub Profile">
+                          <FaGithub className="w-4 h-4" />
                         </a>
                       )}
                       {profile?.social_links?.linkedin && (
-                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                          <FiLinkedin className="w-4 h-4" />
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-[#0a66c2]/30 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-[#0a66c2]/10" title="LinkedIn Profile">
+                          <FaLinkedin className="w-4 h-4" />
                         </a>
                       )}
                     </div>
@@ -982,13 +983,13 @@ export const Portfolio: React.FC = () => {
 
                     <div className="flex space-x-3 pt-6 border-t border-white/5">
                       {profile?.social_links?.github && (
-                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                          <FiGithub className="w-5 h-5" />
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-white/5" title="GitHub Profile">
+                          <FaGithub className="w-5 h-5" />
                         </a>
                       )}
                       {profile?.social_links?.linkedin && (
-                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                          <FiLinkedin className="w-5 h-5" />
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-[#0a66c2]/30 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-[#0a66c2]/10" title="LinkedIn Profile">
+                          <FaLinkedin className="w-5 h-5" />
                         </a>
                       )}
                     </div>
@@ -1169,9 +1170,9 @@ export const Portfolio: React.FC = () => {
                   href={selectedProject.github_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold tracking-wider uppercase transition-all border border-white/10 flex items-center space-x-2 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black text-xs font-bold tracking-wider uppercase transition-all border border-white/20 flex items-center space-x-2 cursor-pointer shadow-md shadow-white/5"
                 >
-                  <FiGithub className="w-4 h-4" />
+                  <FaGithub className="w-4 h-4" />
                   <span>GitHub Repository</span>
                 </a>
               )}
