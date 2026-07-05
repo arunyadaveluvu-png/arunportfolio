@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { ParticleBackground } from '../components/ParticleBackground';
@@ -108,6 +109,9 @@ export const Portfolio: React.FC = () => {
   const [settings, setSettings] = useState<any>(null);
 
   // Interaction States
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSection = searchParams.get('section');
+
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
   const [activeCertModal, setActiveCertModal] = useState<any | null>(null);
   const [showInlinePreview, setShowInlinePreview] = useState(false);
@@ -652,6 +656,734 @@ export const Portfolio: React.FC = () => {
     );
   }
 
+  if (activeSection) {
+    const renderSectionContent = () => {
+      switch (activeSection) {
+        case 'about':
+          return (
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">About Me</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+                  <div className="lg:col-span-2 space-y-6">
+                    <h3 className="text-xl font-bold text-white tracking-tight">My Journey</h3>
+                    <p className="text-gray-400 text-sm sm:text-md leading-relaxed whitespace-pre-line">
+                      {profile?.biography || 'I am a highly motivated student/professional looking to build a career in data engineering, machine learning research, and front-end development. My objective is to leverage mathematical models and analytical applications to build software assets that resolve tangible real-world inquiries.'}
+                    </p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                      <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
+                        <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Interests</h4>
+                        <ul className="text-gray-400 text-xs space-y-1.5 animate-fade-in">
+                          {profile?.social_links?.interests && profile.social_links.interests.length > 0 ? (
+                            profile.social_links.interests.map((interest: string, idx: number) => (
+                              <li key={idx}>• {interest}</li>
+                            ))
+                          ) : (
+                            <>
+                              <li>• Machine Learning & Neural Networks</li>
+                              <li>• Business Intelligence & Dashboard Drafting</li>
+                              <li>• Quantitative Trading Algorithms</li>
+                              <li>• Full-Stack App Engineering</li>
+                            </>
+                          )}
+                        </ul>
+                      </div>
+                      
+                      <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
+                        <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Languages Known</h4>
+                        <ul className="text-gray-400 text-xs space-y-1.5 flex flex-wrap gap-x-4 gap-y-1.5 animate-fade-in">
+                          {profile?.social_links?.languages && profile.social_links.languages.length > 0 ? (
+                            profile.social_links.languages.map((lang: string, idx: number) => (
+                              <li key={idx}>• {lang}</li>
+                            ))
+                          ) : (
+                            <>
+                              <li>• English (Professional)</li>
+                              <li>• Hindi (Native)</li>
+                              <li>• Odia (Conversational)</li>
+                            </>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-1 glass-panel p-6 rounded-2xl border border-white/5 space-y-6">
+                    <h3 className="text-md font-bold text-white tracking-tight">Quick Info</h3>
+                    <div className="space-y-4">
+                      {profile?.email && (
+                        <div className="flex items-center space-x-3 text-xs">
+                          <FiMail className="text-purple-400 w-4 h-4 flex-shrink-0" />
+                          <span className="text-gray-300 truncate">{profile.email}</span>
+                        </div>
+                      )}
+                      {profile?.phone && (
+                        <div className="flex items-center space-x-3 text-xs">
+                          <FiPhone className="text-purple-400 w-4 h-4 flex-shrink-0" />
+                          <span className="text-gray-300">{profile.phone}</span>
+                        </div>
+                      )}
+                      {profile?.location && (
+                        <div className="flex items-center space-x-3 text-xs">
+                          <FiMapPin className="text-purple-400 w-4 h-4 flex-shrink-0" />
+                          <span className="text-gray-300">{profile.location}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex space-x-3 pt-4 border-t border-white/5">
+                      {profile?.social_links?.github && (
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
+                          <FiGithub className="w-4 h-4" />
+                        </a>
+                      )}
+                      {profile?.social_links?.linkedin && (
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
+                          <FiLinkedin className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        case 'skills':
+          return (
+            <div className="animate-fade-in">
+              <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-16 space-y-2">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Skills Inventory</h2>
+                    <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {skillCategories.map((cat, idx) => {
+                      const catSkills = skills.filter(s => s.category === cat);
+                      if (catSkills.length === 0) return null;
+                      return (
+                        <div 
+                          key={cat} 
+                          className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between"
+                        >
+                          <div>
+                            <h3 className="text-sm font-bold text-white tracking-wider border-b border-white/5 pb-3 mb-4 flex items-center space-x-2">
+                              <FiCpu className="w-4 h-4 text-purple-400" />
+                              <span>{cat}</span>
+                            </h3>
+                            <div className="space-y-4">
+                              {catSkills.map((skill) => (
+                                <div key={skill.id} className="space-y-1.5">
+                                  <div className="flex items-center justify-between text-xs font-semibold">
+                                    <div className="flex items-center space-x-2 text-gray-300">
+                                      <SkillIcon name={skill.icon_name} className="w-4 h-4 text-blue-400" />
+                                      <span>{skill.name}</span>
+                                    </div>
+                                    <span className="text-purple-400">{skill.proficiency}%</span>
+                                  </div>
+                                  <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden border border-white/5">
+                                    <div 
+                                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full"
+                                      style={{ width: `${skill.proficiency}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+
+              <section className="relative py-12 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-[#02000a]/10">
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-16 space-y-2">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Model Diagnostics & Statistics</h2>
+                    <p className="text-gray-400 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed mt-2">
+                      Neural network learning curves and model performance statistics compiled from recent machine learning test pipelines.
+                    </p>
+                    <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mt-3"></div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+                      <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
+                        <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Training Loss Convergence</h4>
+                        <p className="text-gray-500 text-[10px] mt-1">Stochastic Gradient Descent (Epochs 1-10)</p>
+                      </div>
+
+                      <div className="w-full h-36 mt-4" style={{ transform: 'translateZ(15px)' }}>
+                        <svg viewBox="0 0 200 100" className="w-full h-full overflow-visible">
+                          <defs>
+                            <linearGradient id="trainLossGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                            </linearGradient>
+                            <linearGradient id="valLossGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <line x1="0" y1="90" x2="200" y2="90" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+                          <line x1="0" y1="50" x2="200" y2="50" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+                          <line x1="0" y1="10" x2="200" y2="10" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+                          <path d="M 10,85 Q 40,30 90,20 T 190,12" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+                          <path d="M 10,88 Q 45,42 90,28 T 190,19" fill="none" stroke="#8b5cf6" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="3,3" />
+                          <circle cx="90" cy="20" r="3" fill="#3b82f6" stroke="#030010" strokeWidth="1" />
+                          <circle cx="90" cy="28" r="3" fill="#8b5cf6" stroke="#030010" strokeWidth="1" />
+                        </svg>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] font-semibold text-gray-500 uppercase mt-4" style={{ transform: 'translateZ(20px)' }}>
+                        <span className="flex items-center space-x-1">
+                          <span className="w-2.5 h-0.5 bg-blue-500 block"></span>
+                          <span>Train Loss</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <span className="w-2.5 h-0.5 bg-purple-500 border-dashed block"></span>
+                          <span>Val Loss</span>
+                        </span>
+                      </div>
+                    </TiltCard>
+
+                    <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+                      <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
+                        <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Model Precision Metrics</h4>
+                        <p className="text-gray-500 text-[10px] mt-1">Binary classification diagnostics</p>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 mt-4 text-center" style={{ transform: 'translateZ(20px)' }}>
+                        <div className="space-y-2">
+                          <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="#3b82f6" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="10" strokeLinecap="round" />
+                            </svg>
+                            <span className="absolute text-[10px] font-bold text-white font-mono">94.2%</span>
+                          </div>
+                          <p className="text-[10px] font-semibold text-gray-400 uppercase">Accuracy</p>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="#8b5cf6" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="18" strokeLinecap="round" />
+                            </svg>
+                            <span className="absolute text-[10px] font-bold text-white font-mono">91.8%</span>
+                          </div>
+                          <p className="text-[10px] font-semibold text-gray-400 uppercase">Precision</p>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
+                              <circle cx="32" cy="32" r="26" fill="transparent" stroke="#ec4899" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="13" strokeLinecap="round" />
+                            </svg>
+                            <span className="absolute text-[10px] font-bold text-white font-mono">92.5%</span>
+                          </div>
+                          <p className="text-[10px] font-semibold text-gray-400 uppercase">F1-Score</p>
+                        </div>
+                      </div>
+
+                      <div className="text-[9px] text-gray-500 mt-4 leading-relaxed text-center font-medium" style={{ transform: 'translateZ(10px)' }}>
+                        Testing run on 25,000 hyperparameter iterations
+                      </div>
+                    </TiltCard>
+
+                    <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+                      <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
+                        <h4 className="text-xs font-bold text-pink-400 uppercase tracking-widest">Neuron Node Activation</h4>
+                        <p className="text-gray-500 text-[10px] mt-1">Top feature input vector coefficients</p>
+                      </div>
+
+                      <div className="space-y-2.5 mt-2" style={{ transform: 'translateZ(20px)' }}>
+                        {[
+                          { name: 'Feature Engineering', val: 92, color: 'from-blue-500 to-purple-500' },
+                          { name: 'Model Tuning', val: 78, color: 'from-purple-500 to-pink-500' },
+                          { name: 'Data Pipeline clean', val: 65, color: 'from-pink-500 to-red-500' },
+                          { name: 'Exploratory Analytics', val: 50, color: 'from-blue-400 to-teal-400' }
+                        ].map((feat, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div className="flex items-center justify-between text-[9px] font-bold">
+                              <span className="text-gray-300 uppercase tracking-wider">{feat.name}</span>
+                              <span className="text-gray-400">{feat.val}%</span>
+                            </div>
+                            <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden border border-white/5">
+                              <div 
+                                className={`bg-gradient-to-r ${feat.color} h-full rounded-full`}
+                                style={{ width: `${feat.val}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="text-[9px] text-gray-500 mt-4 leading-relaxed text-center font-medium" style={{ transform: 'translateZ(10px)' }}>
+                        Weights calculated from Shapley value allocations
+                      </div>
+                    </TiltCard>
+                  </div>
+                </div>
+              </section>
+            </div>
+          );
+        case 'projects':
+          return (
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Case Studies & Projects</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                  <div className="relative flex-1 max-w-md">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                      <FiSearch className="w-4 h-4" />
+                    </span>
+                    <input
+                      type="text"
+                      value={projectSearch}
+                      onChange={(e) => setProjectSearch(e.target.value)}
+                      placeholder="Search projects by tech, title..."
+                      className="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap gap-2" style={{ perspective: 1000, transformStyle: 'preserve-3d' }}>
+                    {projectCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border cursor-pointer ${
+                          selectedCategory === cat
+                            ? 'bg-purple-600/20 text-purple-300 border-purple-500/25 shadow-lg shadow-purple-600/5'
+                            : 'bg-white/5 text-gray-400 hover:bg-white/10 border-transparent'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  <AnimatePresence mode="popLayout">
+                    {filteredProjects.map((project) => (
+                      <div
+                        key={project.id}
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: 'instant' });
+                          setSelectedProject(project);
+                        }}
+                        className="cursor-pointer h-full"
+                        style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
+                      >
+                        <TiltCard className="glass-panel rounded-2xl overflow-hidden border border-white/5 flex flex-col justify-between group glass-panel-hover h-full">
+                          <div className="relative h-44 bg-gray-900 overflow-hidden border-b border-white/5" style={{ transform: 'translateZ(10px)' }}>
+                            {project.image_url ? (
+                              <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-purple-950/20 text-purple-400 text-xs font-bold">Showcase</div>
+                            )}
+                            <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold text-purple-300 border border-white/10 uppercase tracking-wider">
+                              {project.category}
+                            </span>
+                          </div>
+                          
+                          <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                              <h3 className="text-md font-bold text-white group-hover:text-purple-300 transition-colors leading-snug" style={{ transform: 'translateZ(30px)' }}>{project.title}</h3>
+                              <p className="text-gray-400 text-xs mt-2 line-clamp-2 leading-relaxed" style={{ transform: 'translateZ(15px)' }}>{project.description}</p>
+                              
+                              {project.technologies && (
+                                <div className="flex flex-wrap gap-1.5 mt-4" style={{ transform: 'translateZ(20px)' }}>
+                                  {project.technologies.slice(0, 4).map((tech: string, i: number) => (
+                                    <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/5">
+                                      {tech}
+                                    </span>
+                                  ))}
+                                  {project.technologies.length > 4 && (
+                                    <span className="text-[9px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10">
+                                      +{project.technologies.length - 4} More
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center justify-between border-t border-white/5 pt-4" style={{ transform: 'translateZ(20px)' }}>
+                              {project.completion_date && (
+                                <span className="text-[10px] text-gray-500 font-medium">
+                                  {new Date(project.completion_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
+                                </span>
+                              )}
+                              
+                              <div className="flex items-center space-x-3">
+                                {(project.live_url || project.github_url) && (
+                                  <a
+                                    href={project.live_url || project.github_url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="text-[10px] px-2.5 py-1 rounded bg-purple-600/10 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/20 hover:border-transparent transition-all font-bold flex items-center space-x-1 cursor-pointer"
+                                  >
+                                    <span>Visit</span>
+                                    <FiArrowUpRight className="w-3 h-3" />
+                                  </a>
+                                )}
+                                <span className="text-xs text-purple-300 font-semibold group-hover:translate-x-1 transition-transform flex items-center space-x-1">
+                                  <span>Details</span>
+                                  <FiArrowRight className="w-3.5 h-3.5" />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </TiltCard>
+                      </div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </section>
+          );
+        case 'certifications':
+          return (
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Credentials & Honors</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {certs.map((cert, idx) => {
+                    const { image, pdf, drive } = (() => {
+                      if (!cert.image_url) return { image: '', pdf: '', drive: '' };
+                      if (cert.image_url.includes('|')) {
+                        const parts = cert.image_url.split('|');
+                        return {
+                          image: parts[0]?.trim() || '',
+                          pdf: parts[1]?.trim() || '',
+                          drive: parts[2]?.trim() || ''
+                        };
+                      }
+                      if (cert.image_url.toLowerCase().includes('.pdf')) {
+                        return { image: '', pdf: cert.image_url.trim(), drive: '' };
+                      }
+                      return { image: cert.image_url.trim(), pdf: '', drive: '' };
+                    })();
+
+                    const finalPdf = pdf || (cert.verification_url?.toLowerCase().includes('.pdf') ? cert.verification_url : '');
+                    const finalDrive = drive || (cert.verification_url?.toLowerCase().includes('drive.google.com') ? cert.verification_url : '');
+                    const hasDoc = !!(finalPdf || finalDrive);
+
+                    return (
+                      <div 
+                        key={cert.id} 
+                        className="glass-panel p-5 rounded-2xl border border-white/5 flex flex-row items-center justify-between gap-4 group hover:border-white/10 transition-colors w-full"
+                      >
+                        <div className="flex flex-row items-center space-x-4 flex-1 min-w-0">
+                          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 overflow-hidden flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform duration-300">
+                            {image ? (
+                              <img src={image} alt={cert.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <FiAward className="w-5 h-5" />
+                            )}
+                          </div>
+                          <div className="text-left flex-1 min-w-0">
+                            <h3 className="text-xs sm:text-sm font-bold text-white leading-snug break-words whitespace-normal">{cert.name}</h3>
+                            <p className="text-purple-300/80 text-[10px] sm:text-xs font-semibold mt-1 truncate">{cert.organization}</p>
+                            {cert.issue_date && (
+                              <span className="text-[9px] sm:text-[10px] text-gray-500 block mt-1.5">
+                                Issued: {new Date(cert.issue_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex-shrink-0 flex items-center">
+                          {hasDoc ? (
+                            <button
+                              onClick={() => {
+                                window.scrollTo({ top: 0, behavior: 'instant' });
+                                setActiveCertModal({ ...cert, pdf: finalPdf, drive: finalDrive });
+                              }}
+                              className="px-3.5 py-2 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 text-purple-300 hover:text-white border border-purple-500/25 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
+                            >
+                              <span>Verify</span>
+                              <FiArrowUpRight className="w-3 h-3" />
+                            </button>
+                          ) : cert.verification_url ? (
+                            <a
+                              href={cert.verification_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
+                            >
+                              <span>Verify</span>
+                              <FiArrowUpRight className="w-3 h-3" />
+                            </a>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          );
+        case 'education':
+          return (
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-4xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Academic History</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div className="relative border-l border-white/10 ml-4 md:ml-8 space-y-12">
+                  {education.map((edu, idx) => {
+                    const parsed = parseYearAndType(edu.year);
+                    return (
+                      <div 
+                        key={edu.id} 
+                        className="relative pl-8 md:pl-10"
+                      >
+                        <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-[#030014] shadow-lg shadow-purple-600/30"></div>
+                        
+                        <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/10 w-fit">
+                              {parsed.year}
+                            </span>
+                            {edu.cgpa && (
+                              <span className="text-xs text-emerald-400 font-bold font-mono">
+                                {parsed.type === 'percentage' 
+                                  ? `Percentage: ${(Number(edu.cgpa) * 10).toFixed(1)}%` 
+                                  : parsed.type === 'gpa' 
+                                    ? `GPA: ${Number(edu.cgpa).toFixed(2)}/4`
+                                    : `CGPA: ${Number(edu.cgpa).toFixed(2)}/10`
+                                }
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-md font-bold text-white leading-snug">{edu.degree}</h3>
+                            <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
+                            {edu.university && (
+                              <p className="text-gray-500 text-xs mt-0.5">{edu.university}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          );
+        case 'contact':
+          return (
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Get In Touch</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start mt-12">
+                  <div className="lg:col-span-2 space-y-6">
+                    <h3 className="text-xl font-bold text-white tracking-tight">Collaboration & Inquiries</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+                      Have an interesting project, internship position, or simply want to connect? Drop a message and I will reply as soon as possible.
+                    </p>
+                    
+                    <div className="space-y-4 pt-4 border-t border-white/5">
+                      {profile?.email && (
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/10">
+                            <FiMail className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Email</p>
+                            <a href={`mailto:${profile.email}`} className="text-sm font-semibold text-purple-300 hover:underline break-all">{profile.email}</a>
+                          </div>
+                        </div>
+                      )}
+
+                      {profile?.location && (
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/10">
+                            <FiMapPin className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Location</p>
+                            <span className="text-sm font-semibold text-white">{profile.location}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex space-x-3 pt-6 border-t border-white/5">
+                      {profile?.social_links?.github && (
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
+                          <FiGithub className="w-5 h-5" />
+                        </a>
+                      )}
+                      {profile?.social_links?.linkedin && (
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
+                          <FiLinkedin className="w-5 h-5" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-3 glass-panel p-8 rounded-2xl border border-white/5">
+                    <form onSubmit={handleContactSubmit} className="space-y-6">
+                      {contactStatus === 'success' && (
+                        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-xs flex items-center space-x-2">
+                          <FiCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                          <span>Your message has been submitted and logged. Thank you!</span>
+                        </div>
+                      )}
+
+                      {contactStatus === 'error' && (
+                        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/25 text-red-300 text-xs">
+                          Failed to submit message. Please try again.
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Your Name</label>
+                          <input
+                            type="text"
+                            required
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                            placeholder="Jane Doe"
+                            className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email Address</label>
+                          <input
+                            type="email"
+                            required
+                            value={contactEmail}
+                            onChange={(e) => setContactEmail(e.target.value)}
+                            placeholder="jane@example.com"
+                            className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Subject</label>
+                        <input
+                          type="text"
+                          required
+                          value={contactSubject}
+                          onChange={(e) => setContactSubject(e.target.value)}
+                          placeholder="e.g. Internship Inquiry"
+                          className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Message</label>
+                        <textarea
+                          required
+                          value={contactMessage}
+                          onChange={(e) => setContactMessage(e.target.value)}
+                          placeholder="Draft your message details..."
+                          rows={5}
+                          className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all resize-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={contactSubmitting}
+                        className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 shadow-lg shadow-purple-600/20 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-2"
+                      >
+                        {contactSubmitting ? (
+                          <>
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <span>Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FiSend className="w-3.5 h-3.5" />
+                            <span>Send Message</span>
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <div className="relative min-h-screen bg-[#030014] text-gray-200 flex flex-col justify-between z-50 pt-20">
+        {/* Particle Canvas */}
+        <div className="absolute inset-0 z-0">
+          <ParticleBackground />
+        </div>
+
+        {/* Decorative Orbs */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-purple-900/10 via-blue-900/5 to-transparent blur-[120px] pointer-events-none z-0"></div>
+
+        {/* Specialized Sub-page Header with Back to Home Button */}
+        <header className="sticky top-0 left-0 w-full z-50 glass-panel py-4 px-6 flex items-center justify-between border-b border-white/5 backdrop-blur-md">
+          <button
+            onClick={() => {
+              setSearchParams({});
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }}
+            className="flex items-center space-x-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold hover:bg-purple-500/20 hover:text-white transition-all duration-300 cursor-pointer"
+          >
+            <span>&larr; Back to Home</span>
+          </button>
+          <span className="text-sm font-extrabold tracking-widest bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent uppercase">
+            {activeSection === 'certifications' ? 'Certifications' : activeSection}
+          </span>
+          <div className="w-28 hidden sm:block"></div> {/* spacer */}
+        </header>
+
+        {/* Section Main Content */}
+        <main className="relative z-10 flex-1">
+          {renderSectionContent()}
+        </main>
+
+        {/* Copyright Footer */}
+        <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
+          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+            Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
+
   return (
     <div className="relative min-h-screen bg-[#030014] overflow-x-hidden text-gray-200">
       {/* Decorative Orbs */}
@@ -749,13 +1481,16 @@ export const Portfolio: React.FC = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
             style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
           >
-            <motion.a 
-              href="#projects" 
+            <motion.button 
+              onClick={() => {
+                setSearchParams({ section: 'projects' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }}
               whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
               className="w-full sm:w-auto px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all duration-300 shadow-lg shadow-purple-600/20 text-center tracking-wider cursor-pointer"
             >
               View Projects
-            </motion.a>
+            </motion.button>
             {profile?.resume_url && (
               <>
                 <motion.a 
@@ -778,789 +1513,17 @@ export const Portfolio: React.FC = () => {
                 </motion.button>
               </>
             )}
-            <motion.a 
-              href="#contact" 
+            <motion.button 
+              onClick={() => {
+                setSearchParams({ section: 'contact' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }}
               whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
               className="w-full sm:w-auto px-6 py-3 rounded-full bg-transparent hover:text-purple-300 text-gray-400 font-semibold text-xs transition-all duration-300 text-center tracking-wider cursor-pointer"
             >
               Contact Me
-            </motion.a>
+            </motion.button>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          ABOUT ME SECTION
-          ========================================== */}
-      <section id="about" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5 bg-[#02000a]/20">
-        <div className="max-w-6xl mx-auto">
-          {/* Section title */}
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">About Me</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-            {/* Bio Column */}
-            <div className="lg:col-span-2 space-y-6">
-              <h3 className="text-xl font-bold text-white tracking-tight">My Journey</h3>
-              <p className="text-gray-400 text-sm sm:text-md leading-relaxed whitespace-pre-line">
-                {profile?.biography || 'I am a highly motivated student/professional looking to build a career in data engineering, machine learning research, and front-end development. My objective is to leverage mathematical models and analytical applications to build software assets that resolve tangible real-world inquiries.'}
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
-                <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
-                  <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Interests</h4>
-                  <ul className="text-gray-400 text-xs space-y-1.5 animate-fade-in">
-                    {profile?.social_links?.interests && profile.social_links.interests.length > 0 ? (
-                      profile.social_links.interests.map((interest: string, idx: number) => (
-                        <li key={idx}>• {interest}</li>
-                      ))
-                    ) : (
-                      <>
-                        <li>• Machine Learning & Neural Networks</li>
-                        <li>• Business Intelligence & Dashboard Drafting</li>
-                        <li>• Quantitative Trading Algorithms</li>
-                        <li>• Full-Stack App Engineering</li>
-                      </>
-                    )}
-                  </ul>
-                </div>
-                
-                <div className="glass-panel p-5 rounded-2xl border border-white/5 space-y-2">
-                  <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Languages Known</h4>
-                  <ul className="text-gray-400 text-xs space-y-1.5 flex flex-wrap gap-x-4 gap-y-1.5 animate-fade-in">
-                    {profile?.social_links?.languages && profile.social_links.languages.length > 0 ? (
-                      profile.social_links.languages.map((lang: string, idx: number) => (
-                        <li key={idx}>• {lang}</li>
-                      ))
-                    ) : (
-                      <>
-                        <li>• English (Professional)</li>
-                        <li>• Hindi (Native)</li>
-                        <li>• Odia (Conversational)</li>
-                      </>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Stats/Contact Box */}
-            <div className="lg:col-span-1 glass-panel p-6 rounded-2xl border border-white/5 space-y-6">
-              <h3 className="text-md font-bold text-white tracking-tight">Quick Info</h3>
-              <div className="space-y-4">
-                {profile?.email && (
-                  <div className="flex items-center space-x-3 text-xs">
-                    <FiMail className="text-purple-400 w-4 h-4 flex-shrink-0" />
-                    <span className="text-gray-300 truncate">{profile.email}</span>
-                  </div>
-                )}
-                {profile?.phone && (
-                  <div className="flex items-center space-x-3 text-xs">
-                    <FiPhone className="text-purple-400 w-4 h-4 flex-shrink-0" />
-                    <span className="text-gray-300">{profile.phone}</span>
-                  </div>
-                )}
-                {profile?.location && (
-                  <div className="flex items-center space-x-3 text-xs">
-                    <FiMapPin className="text-purple-400 w-4 h-4 flex-shrink-0" />
-                    <span className="text-gray-300">{profile.location}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Social Anchors */}
-              <div className="flex space-x-3 pt-4 border-t border-white/5">
-                {profile?.social_links?.github && (
-                  <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                    <FiGithub className="w-4 h-4" />
-                  </a>
-                )}
-                {profile?.social_links?.linkedin && (
-                  <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                    <FiLinkedin className="w-4 h-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          SKILLS SECTION
-          ========================================== */}
-      <section id="skills" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Skills Inventory</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skillCategories.map((cat, idx) => {
-              const catSkills = skills.filter(s => s.category === cat);
-              if (catSkills.length === 0) return null;
-              return (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  key={cat} 
-                  className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between"
-                >
-                  <div>
-                    <h3 className="text-sm font-bold text-white tracking-wider border-b border-white/5 pb-3 mb-4 flex items-center space-x-2">
-                      <FiCpu className="w-4 h-4 text-purple-400" />
-                      <span>{cat}</span>
-                    </h3>
-                    <div className="space-y-4">
-                      {catSkills.map((skill) => (
-                        <div key={skill.id} className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs font-semibold">
-                            <div className="flex items-center space-x-2 text-gray-300">
-                              <SkillIcon name={skill.icon_name} className="w-4 h-4 text-blue-400" />
-                              <span>{skill.name}</span>
-                            </div>
-                            <span className="text-purple-400">{skill.proficiency}%</span>
-                          </div>
-                          <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden border border-white/5">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${skill.proficiency}%` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 1, ease: "easeOut" }}
-                              className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          MODEL DIAGNOSTICS & TRAINING ANALYTICS SECTION
-          ========================================== */}
-      <section id="diagnostics" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5 bg-[#02000a]/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Model Diagnostics & Statistics</h2>
-            <p className="text-gray-400 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed mt-2">
-              Neural network learning curves and model performance statistics compiled from recent machine learning test pipelines.
-            </p>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mt-3"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* 1. Loss Optimization Curves (SVG Line chart) */}
-            <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
-              <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
-                <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest">Training Loss Convergence</h4>
-                <p className="text-gray-500 text-[10px] mt-1">Stochastic Gradient Descent (Epochs 1-10)</p>
-              </div>
-
-              {/* SVG Curve */}
-              <div className="w-full h-36 mt-4" style={{ transform: 'translateZ(15px)' }}>
-                <svg viewBox="0 0 200 100" className="w-full h-full overflow-visible">
-                  <defs>
-                    <linearGradient id="trainLossGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id="valLossGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.2" />
-                      <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Grid Lines */}
-                  <line x1="0" y1="90" x2="200" y2="90" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-                  <line x1="0" y1="50" x2="200" y2="50" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-                  <line x1="0" y1="10" x2="200" y2="10" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-                  
-                  {/* Training Loss Path: starts high, curves down smoothly */}
-                  <path 
-                    d="M 10,85 Q 40,30 90,20 T 190,12" 
-                    fill="none" 
-                    stroke="#3b82f6" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                  />
-                  
-                  {/* Validation Loss Path: starts high, curves down, stabilizes slightly higher */}
-                  <path 
-                    d="M 10,88 Q 45,42 90,28 T 190,19" 
-                    fill="none" 
-                    stroke="#8b5cf6" 
-                    strokeWidth="1.5" 
-                    strokeLinecap="round" 
-                    strokeDasharray="3,3"
-                  />
-                  
-                  {/* Node point highlight */}
-                  <circle cx="90" cy="20" r="3" fill="#3b82f6" stroke="#030010" strokeWidth="1" />
-                  <circle cx="90" cy="28" r="3" fill="#8b5cf6" stroke="#030010" strokeWidth="1" />
-                </svg>
-              </div>
-
-              <div className="flex items-center justify-between text-[10px] font-semibold text-gray-500 uppercase mt-4" style={{ transform: 'translateZ(20px)' }}>
-                <span className="flex items-center space-x-1">
-                  <span className="w-2.5 h-0.5 bg-blue-500 block"></span>
-                  <span>Train Loss</span>
-                </span>
-                <span className="flex items-center space-x-1">
-                  <span className="w-2.5 h-0.5 bg-purple-500 border-dashed block"></span>
-                  <span>Val Loss</span>
-                </span>
-              </div>
-            </TiltCard>
-
-            {/* 2. Performance Metrics (SVG Gauges) */}
-            <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
-              <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
-                <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Model Precision Metrics</h4>
-                <p className="text-gray-500 text-[10px] mt-1">Binary classification diagnostics</p>
-              </div>
-
-              {/* Gauges Grid */}
-              <div className="grid grid-cols-3 gap-2 mt-4 text-center" style={{ transform: 'translateZ(20px)' }}>
-                {/* Accuracy */}
-                <div className="space-y-2">
-                  <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="#3b82f6" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="10" strokeLinecap="round" />
-                    </svg>
-                    <span className="absolute text-[10px] font-bold text-white font-mono">94.2%</span>
-                  </div>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase">Accuracy</p>
-                </div>
-                
-                {/* Precision */}
-                <div className="space-y-2">
-                  <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="#8b5cf6" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="18" strokeLinecap="round" />
-                    </svg>
-                    <span className="absolute text-[10px] font-bold text-white font-mono">91.8%</span>
-                  </div>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase">Precision</p>
-                </div>
-
-                {/* Recall */}
-                <div className="space-y-2">
-                  <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth="3" />
-                      <circle cx="32" cy="32" r="26" fill="transparent" stroke="#ec4899" strokeWidth="3.5" strokeDasharray="163" strokeDashoffset="13" strokeLinecap="round" />
-                    </svg>
-                    <span className="absolute text-[10px] font-bold text-white font-mono">92.5%</span>
-                  </div>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase">F1-Score</p>
-                </div>
-              </div>
-
-              <div className="text-[9px] text-gray-500 mt-4 leading-relaxed text-center font-medium" style={{ transform: 'translateZ(10px)' }}>
-                Testing run on 25,000 hyperparameter iterations
-              </div>
-            </TiltCard>
-
-            {/* 3. Feature Importance (SVG Bars) */}
-            <TiltCard className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
-              <div className="mb-4" style={{ transform: 'translateZ(30px)' }}>
-                <h4 className="text-xs font-bold text-pink-400 uppercase tracking-widest">Neuron Node Activation</h4>
-                <p className="text-gray-500 text-[10px] mt-1">Top feature input vector coefficients</p>
-              </div>
-
-              <div className="space-y-2.5 mt-2" style={{ transform: 'translateZ(20px)' }}>
-                {[
-                  { name: 'Feature Engineering', val: 92, color: 'from-blue-500 to-purple-500' },
-                  { name: 'Model Tuning', val: 78, color: 'from-purple-500 to-pink-500' },
-                  { name: 'Data Pipeline clean', val: 65, color: 'from-pink-500 to-red-500' },
-                  { name: 'Exploratory Analytics', val: 50, color: 'from-blue-400 to-teal-400' }
-                ].map((feat, idx) => (
-                  <div key={idx} className="space-y-1">
-                    <div className="flex items-center justify-between text-[9px] font-bold">
-                      <span className="text-gray-300 uppercase tracking-wider">{feat.name}</span>
-                      <span className="text-gray-400">{feat.val}%</span>
-                    </div>
-                    <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden border border-white/5">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${feat.val}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: idx * 0.15 }}
-                        className={`bg-gradient-to-r ${feat.color} h-full rounded-full`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-[9px] text-gray-500 mt-4 leading-relaxed text-center font-medium" style={{ transform: 'translateZ(10px)' }}>
-                Weights calculated from Shapley value allocations
-              </div>
-            </TiltCard>
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          PROJECTS SECTION
-          ========================================== */}
-      <section id="projects" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5 bg-[#02000a]/20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Case Studies & Projects</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          {/* Filtering & Search Bar */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                <FiSearch className="w-4 h-4" />
-              </span>
-              <input
-                type="text"
-                value={projectSearch}
-                onChange={(e) => setProjectSearch(e.target.value)}
-                placeholder="Search projects by tech, title..."
-                className="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
-              />
-            </div>
-
-            {/* Filter buttons */}
-            <div className="flex flex-wrap gap-2" style={{ perspective: 1000, transformStyle: 'preserve-3d' }}>
-              {projectCategories.map((cat) => (
-                <motion.button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
-                  className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border cursor-pointer ${
-                    selectedCategory === cat
-                      ? 'bg-purple-600/20 text-purple-300 border-purple-500/25 shadow-lg shadow-purple-600/5'
-                      : 'bg-white/5 text-gray-400 hover:bg-white/10 border-transparent'
-                  }`}
-                >
-                  {cat}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
-          {/* Project grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  whileTap={{ scale: 0.96, rotateX: -6, rotateY: 6 }}
-                  transition={{ duration: 0.2 }}
-                  key={project.id}
-                  onClick={() => setSelectedProject(project)}
-                  className="cursor-pointer h-full"
-                  style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
-                >
-                  <TiltCard className="glass-panel rounded-2xl overflow-hidden border border-white/5 flex flex-col justify-between group glass-panel-hover h-full">
-                    <div className="relative h-44 bg-gray-900 overflow-hidden border-b border-white/5" style={{ transform: 'translateZ(10px)' }}>
-                      {project.image_url ? (
-                        <img 
-                          src={project.image_url} 
-                          alt={project.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-purple-950/20 text-purple-400 text-xs font-bold">Showcase</div>
-                      )}
-                      <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold text-purple-300 border border-white/10 uppercase tracking-wider">
-                        {project.category}
-                      </span>
-                    </div>
-                    
-                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                      <div>
-                        <h3 className="text-md font-bold text-white group-hover:text-purple-300 transition-colors leading-snug" style={{ transform: 'translateZ(30px)' }}>{project.title}</h3>
-                        <p className="text-gray-400 text-xs mt-2 line-clamp-2 leading-relaxed" style={{ transform: 'translateZ(15px)' }}>{project.description}</p>
-                        
-                        {project.technologies && (
-                          <div className="flex flex-wrap gap-1.5 mt-4" style={{ transform: 'translateZ(20px)' }}>
-                            {project.technologies.slice(0, 4).map((tech: string, i: number) => (
-                              <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/5">
-                                {tech}
-                              </span>
-                            ))}
-                            {project.technologies.length > 4 && (
-                              <span className="text-[9px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10">
-                                +{project.technologies.length - 4} More
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between border-t border-white/5 pt-4" style={{ transform: 'translateZ(20px)' }}>
-                        {project.completion_date && (
-                          <span className="text-[10px] text-gray-500 font-medium">
-                            {new Date(project.completion_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
-                          </span>
-                        )}
-                        
-                        <div className="flex items-center space-x-3">
-                          {(project.live_url || project.github_url) && (
-                            <a
-                              href={project.live_url || project.github_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()} // Stop details modal from opening
-                              className="text-[10px] px-2.5 py-1 rounded bg-purple-600/10 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/20 hover:border-transparent transition-all font-bold flex items-center space-x-1 cursor-pointer"
-                            >
-                              <span>Visit</span>
-                              <FiArrowUpRight className="w-3 h-3" />
-                            </a>
-                          )}
-                          <span className="text-xs text-purple-300 font-semibold group-hover:translate-x-1 transition-transform flex items-center space-x-1">
-                            <span>Details</span>
-                            <FiArrowRight className="w-3.5 h-3.5" />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          CERTIFICATIONS SECTION
-          ========================================== */}
-      <section id="certifications" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Credentials & Honors</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {certs.map((cert, idx) => {
-              const { image, pdf, drive } = (() => {
-                if (!cert.image_url) return { image: '', pdf: '', drive: '' };
-                if (cert.image_url.includes('|')) {
-                  const parts = cert.image_url.split('|');
-                  return {
-                    image: parts[0]?.trim() || '',
-                    pdf: parts[1]?.trim() || '',
-                    drive: parts[2]?.trim() || ''
-                  };
-                }
-                if (cert.image_url.toLowerCase().includes('.pdf')) {
-                  return { image: '', pdf: cert.image_url.trim(), drive: '' };
-                }
-                return { image: cert.image_url.trim(), pdf: '', drive: '' };
-              })();
-
-              const finalPdf = pdf || (cert.verification_url?.toLowerCase().includes('.pdf') ? cert.verification_url : '');
-              const finalDrive = drive || (cert.verification_url?.toLowerCase().includes('drive.google.com') ? cert.verification_url : '');
-              const hasDoc = !!(finalPdf || finalDrive);
-
-              return (
-                <motion.div 
-                  initial={{ opacity: 0, x: idx % 2 === 0 ? -25 : 25 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                  key={cert.id} 
-                  className="glass-panel p-5 rounded-2xl border border-white/5 flex flex-row items-center justify-between gap-4 group hover:border-white/10 transition-colors w-full"
-                >
-                  <div className="flex flex-row items-center space-x-4 flex-1 min-w-0">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 overflow-hidden flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform duration-300">
-                      {image ? (
-                        <img src={image} alt={cert.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <FiAward className="w-5 h-5" />
-                      )}
-                    </div>
-                    <div className="text-left flex-1 min-w-0">
-                      <h3 className="text-xs sm:text-sm font-bold text-white leading-snug break-words whitespace-normal">{cert.name}</h3>
-                      <p className="text-purple-300/80 text-[10px] sm:text-xs font-semibold mt-1 truncate">{cert.organization}</p>
-                      {cert.issue_date && (
-                        <span className="text-[9px] sm:text-[10px] text-gray-500 block mt-1.5">
-                          Issued: {new Date(cert.issue_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex-shrink-0 flex items-center">
-                    {hasDoc ? (
-                      <button
-                        onClick={() => {
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                          setActiveCertModal({ ...cert, pdf: finalPdf, drive: finalDrive });
-                        }}
-                        className="px-3.5 py-2 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 text-purple-300 hover:text-white border border-purple-500/25 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
-                      >
-                        <span>Verify</span>
-                        <FiArrowUpRight className="w-3 h-3" />
-                      </button>
-                    ) : cert.verification_url ? (
-                      <a
-                        href={cert.verification_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-purple-600/20 text-gray-300 hover:text-white border border-white/10 text-center text-xs font-semibold transition-all flex items-center justify-center space-x-1 cursor-pointer"
-                      >
-                        <span>Verify</span>
-                        <FiArrowUpRight className="w-3 h-3" />
-                      </a>
-                    ) : null}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          EDUCATION TIMELINE SECTION
-          ========================================== */}
-      <section id="education" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5 bg-[#02000a]/20">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Academic History</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="relative border-l border-white/10 ml-4 md:ml-8 space-y-12">
-            {education.map((edu, idx) => {
-              const parsed = parseYearAndType(edu.year);
-              return (
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: idx * 0.15 }}
-                  key={edu.id} 
-                  className="relative pl-8 md:pl-10"
-                >
-                  {/* Timeline node dot */}
-                  <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-[#030014] shadow-lg shadow-purple-600/30"></div>
-                  
-                  <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/10 w-fit">
-                        {parsed.year}
-                      </span>
-                      {edu.cgpa && (
-                        <span className="text-xs text-emerald-400 font-bold font-mono">
-                          {parsed.type === 'percentage' 
-                            ? `Percentage: ${(Number(edu.cgpa) * 10).toFixed(1)}%` 
-                            : parsed.type === 'gpa' 
-                              ? `GPA: ${Number(edu.cgpa).toFixed(2)}/4`
-                              : `CGPA: ${Number(edu.cgpa).toFixed(2)}/10`
-                          }
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-md font-bold text-white leading-snug">{edu.degree}</h3>
-                      <p className="text-gray-300 text-sm mt-1">{edu.college}</p>
-                      {edu.university && (
-                        <p className="text-gray-500 text-xs mt-0.5">{edu.university}</p>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          CONTACT SECTION & FORM
-          ========================================== */}
-      <section id="contact" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Get in Touch</h2>
-            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-stretch">
-            {/* Contact details */}
-            <div className="lg:col-span-2 glass-panel p-8 rounded-2xl border border-white/5 flex flex-col justify-between space-y-8">
-              <div>
-                <h3 className="text-lg font-bold text-white tracking-tight">Let's Discuss Opportunities</h3>
-                <p className="text-gray-400 text-xs mt-2 leading-relaxed">
-                  Have a project inquiry, internship opening, or data science challenge? Feel free to reach out using the contact information or the inquiry form.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                {profile?.email && (
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/10">
-                      <FiMail className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Email Address</p>
-                      <a href={`mailto:${profile.email}`} className="text-sm font-semibold text-white hover:text-purple-300 transition-colors">
-                        {profile.email}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                {profile?.phone && (
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/10">
-                      <FiPhone className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Phone</p>
-                      <a href={`tel:${profile.phone}`} className="text-sm font-semibold text-white hover:text-purple-300 transition-colors">
-                        {profile.phone}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                {profile?.location && (
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/10">
-                      <FiMapPin className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Location</p>
-                      <span className="text-sm font-semibold text-white">{profile.location}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex space-x-3 pt-6 border-t border-white/5">
-                {profile?.social_links?.github && (
-                  <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                    <FiGithub className="w-5 h-5" />
-                  </a>
-                )}
-                {profile?.social_links?.linkedin && (
-                  <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-gray-400 hover:text-white transition-all duration-300 flex-1 flex justify-center border border-white/5">
-                    <FiLinkedin className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="lg:col-span-3 glass-panel p-8 rounded-2xl border border-white/5">
-              <form onSubmit={handleContactSubmit} className="space-y-6">
-                {contactStatus === 'success' && (
-                  <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-xs flex items-center space-x-2">
-                    <FiCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Your message has been submitted and logged. Thank you!</span>
-                  </div>
-                )}
-
-                {contactStatus === 'error' && (
-                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/25 text-red-300 text-xs">
-                    Failed to submit message. Please try again.
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Name */}
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Your Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      placeholder="Jane Doe"
-                      className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      required
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      placeholder="jane@example.com"
-                      className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Subject */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Subject</label>
-                  <input
-                    type="text"
-                    required
-                    value={contactSubject}
-                    onChange={(e) => setContactSubject(e.target.value)}
-                    placeholder="e.g. Internship Inquiry"
-                    className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all"
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Message</label>
-                  <textarea
-                    required
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    placeholder="Draft your message details..."
-                    rows={5}
-                    className="block w-full px-4 py-3 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-xs text-white placeholder-gray-600 focus:outline-none transition-all resize-none"
-                  />
-                </div>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={contactSubmitting}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 shadow-lg shadow-purple-600/20 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-2"
-                >
-                  {contactSubmitting ? (
-                    <>
-                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <FiSend className="w-3.5 h-3.5" />
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-          </div>
         </div>
       </section>
     </div>

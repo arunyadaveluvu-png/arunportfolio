@@ -26,14 +26,8 @@ export const Header: React.FC = () => {
 
   const handleNavClick = (sectionId: string) => {
     setIsOpen(false);
-    if (!isHome) {
-      navigate('/' + sectionId);
-    } else {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+    navigate(`/?section=${sectionId}`);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const navLinks = [

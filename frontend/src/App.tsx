@@ -20,13 +20,19 @@ import { ManageGallery } from './pages/admin/ManageGallery';
 import { ManageMessages } from './pages/admin/ManageMessages';
 import { ManageSettings } from './pages/admin/ManageSettings';
 
+import { useLocation } from 'react-router-dom';
+
 // Public Layout Wrapper (to show Header and Footer on landing page, but hide them in login/admin)
 const PublicLayout: React.FC = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const activeSection = searchParams.get('section');
+
   return (
     <>
       <Header />
       <Portfolio />
-      <Footer />
+      {!activeSection && <Footer />}
     </>
   );
 };
