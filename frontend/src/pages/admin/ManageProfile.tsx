@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import { supabase } from '../../services/supabase';
-import { FiSave, FiUpload, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiInfo, FiFileText } from 'react-icons/fi';
+import { FiSave, FiUpload, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiInfo, FiFileText, FiLink } from 'react-icons/fi';
 
 interface ProfileData {
   name: string;
@@ -20,6 +20,7 @@ interface ProfileData {
     show_banner?: boolean;
     interests?: string[];
     languages?: string[];
+    custom_links?: Array<{ platform: string; url: string }>;
   };
 }
 
@@ -54,6 +55,23 @@ export const ManageProfile: React.FC = () => {
   const [interestsText, setInterestsText] = useState('');
   const [languagesText, setLanguagesText] = useState('');
 
+  // Custom dynamic links
+  const [customLinks, setCustomLinks] = useState<Array<{ platform: string; url: string }>>([]);
+  const [newPlatform, setNewPlatform] = useState('WhatsApp');
+  const [newUrl, setNewUrl] = useState('');
+
+  const handleAddCustomLink = () => {
+    if (!newUrl) return;
+    // Check for duplicate platform
+    if (customLinks.some(l => l.platform.toLowerCase() === newPlatform.toLowerCase())) {
+      setError(`A link for ${newPlatform} already exists. Remove the existing one first.`);
+      return;
+    }
+    setCustomLinks([...customLinks, { platform: newPlatform, url: newUrl }]);
+    setNewUrl('');
+    setError(null);
+  };
+
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -80,6 +98,7 @@ export const ManageProfile: React.FC = () => {
         setShowBanner(data.social_links?.show_banner !== false);
         setInterestsText(data.social_links?.interests?.join('\n') || '');
         setLanguagesText(data.social_links?.languages?.join('\n') || '');
+        setCustomLinks(data.social_links?.custom_links || []);
       }
     } catch (err: any) {
       console.error(err);
@@ -149,6 +168,7 @@ export const ManageProfile: React.FC = () => {
         show_banner: showBanner,
         interests: interestsText.split('\n').map(item => item.trim()).filter(Boolean),
         languages: languagesText.split('\n').map(item => item.trim()).filter(Boolean),
+        custom_links: customLinks,
       },
     };
 
@@ -530,6 +550,85 @@ export const ManageProfile: React.FC = () => {
                   className="block w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/5 focus:border-purple-500/40 text-sm text-white focus:outline-none transition-all"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Custom Social / Messaging Links */}
+          <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-4">
+            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+              <FiLink className="w-4.5 h-4.5 text-purple-400" />
+              <span>Dynamic Custom Links (WhatsApp, Instagram, Telegram, etc.)</span>
+            </h3>
+
+            <p className="text-xs text-gray-400 leading-relaxed">
+              Add extra messaging or social handles. These will render dynamically in your public portfolio contact options and footers.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {customLinks.length > 0 ? (
+                customLinks.map((link, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3.5 rounded-xl bg-black/30 border border-white/5 shadow-inner">
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <span className="px-2.5 py-1 rounded bg-purple-600/15 text-purple-300 border border-purple-500/10 text-[9px] font-extrabold uppercase tracking-wider">
+                        {link.platform}
+                      </span>
+                      <span className="text-xs text-gray-300 truncate max-w-[150px] font-medium" title={link.url}>
+                        {link.url}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCustomLinks(customLinks.filter((_, i) => i !== idx))}
+                      className="text-red-400 hover:text-red-300 text-xs font-semibold cursor-pointer px-2.5 py-1 rounded hover:bg-red-500/10 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full py-6 text-center text-xs text-gray-500 font-medium">
+                  No custom links added yet. Use the form below to add handles like Instagram or WhatsApp.
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-end gap-3 pt-4 border-t border-white/5">
+              <div className="w-full sm:w-1/3">
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Platform</label>
+                <select
+                  value={newPlatform}
+                  onChange={(e) => setNewPlatform(e.target.value)}
+                  className="block w-full px-3 py-2.5 rounded-xl bg-black/40 border border-white/5 text-xs text-white focus:outline-none transition-all cursor-pointer font-semibold"
+                >
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Twitter">Twitter / X</option>
+                  <option value="Telegram">Telegram</option>
+                  <option value="Discord">Discord</option>
+                  <option value="Pinterest">Pinterest</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Custom">Custom Link</option>
+                </select>
+              </div>
+              <div className="w-full sm:flex-1">
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">URL</label>
+                <input
+                  type="url"
+                  value={newUrl}
+                  onChange={(e) => setNewUrl(e.target.value)}
+                  placeholder={newPlatform === 'WhatsApp' ? 'https://wa.me/91XXXXXXXXXX' : 'https://...'}
+                  className="block w-full px-3 py-2.5 rounded-xl bg-black/40 border border-white/5 text-xs text-white focus:outline-none transition-all"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAddCustomLink}
+                className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow shadow-purple-600/10 flex justify-center items-center"
+              >
+                Add Link
+              </button>
             </div>
           </div>
 

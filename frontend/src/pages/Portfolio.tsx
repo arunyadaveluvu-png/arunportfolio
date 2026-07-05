@@ -4,13 +4,77 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { ParticleBackground } from '../components/ParticleBackground';
 import { SkillIcon } from '../components/SkillIcon';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { 
+  FaGithub, FaLinkedin, FaWhatsapp, FaInstagram, 
+  FaYoutube, FaFacebook, FaTwitter, FaTelegram, 
+  FaDiscord, FaPinterest, FaTiktok 
+} from 'react-icons/fa';
 import { 
   FiMail, FiPhone, FiMapPin, FiLink, 
   FiSearch, FiArrowRight, FiFileText, FiAward, FiBookOpen, 
   FiCpu, FiSend, FiCheck, FiCalendar, FiArrowUpRight, FiHeart,
   FiX, FiEye, FiDownload
 } from 'react-icons/fi';
+
+const getSocialIcon = (platform: string, className = "w-5 h-5") => {
+  switch (platform.toLowerCase()) {
+    case 'github':
+      return <FaGithub className={className} />;
+    case 'linkedin':
+      return <FaLinkedin className={className} />;
+    case 'whatsapp':
+      return <FaWhatsapp className={className} />;
+    case 'instagram':
+      return <FaInstagram className={className} />;
+    case 'youtube':
+      return <FaYoutube className={className} />;
+    case 'facebook':
+      return <FaFacebook className={className} />;
+    case 'twitter':
+    case 'x':
+      return <FaTwitter className={className} />;
+    case 'telegram':
+      return <FaTelegram className={className} />;
+    case 'discord':
+      return <FaDiscord className={className} />;
+    case 'pinterest':
+      return <FaPinterest className={className} />;
+    case 'tiktok':
+      return <FaTiktok className={className} />;
+    default:
+      return <FiLink className={className} />;
+  }
+};
+
+const getPlatformStyles = (platform: string) => {
+  switch (platform.toLowerCase()) {
+    case 'github':
+      return 'bg-white/10 hover:bg-white text-white hover:text-black border-white/20 shadow-white/5';
+    case 'linkedin':
+      return 'bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border-[#0a66c2]/30 shadow-[#0a66c2]/10';
+    case 'whatsapp':
+      return 'bg-[#25d366]/10 hover:bg-[#25d366] text-[#25d366] hover:text-white border-[#25d366]/30 shadow-[#25d366]/10';
+    case 'instagram':
+      return 'bg-[#e1306c]/10 hover:bg-[#e1306c] text-[#e1306c] hover:text-white border-[#e1306c]/30 shadow-[#e1306c]/10';
+    case 'youtube':
+      return 'bg-[#ff0000]/10 hover:bg-[#ff0000] text-[#ff0000] hover:text-white border-[#ff0000]/30 shadow-[#ff0000]/10';
+    case 'facebook':
+      return 'bg-[#1877f2]/10 hover:bg-[#1877f2] text-[#1877f2] hover:text-white border-[#1877f2]/30 shadow-[#1877f2]/10';
+    case 'twitter':
+    case 'x':
+      return 'bg-[#1da1f2]/10 hover:bg-[#1da1f2] text-[#1da1f2] hover:text-white border-[#1da1f2]/30 shadow-[#1da1f2]/10';
+    case 'telegram':
+      return 'bg-[#0088cc]/10 hover:bg-[#0088cc] text-[#0088cc] hover:text-white border-[#0088cc]/30 shadow-[#0088cc]/10';
+    case 'discord':
+      return 'bg-[#5865f2]/10 hover:bg-[#5865f2] text-[#5865f2] hover:text-white border-[#5865f2]/30 shadow-[#5865f2]/10';
+    case 'pinterest':
+      return 'bg-[#bd081c]/10 hover:bg-[#bd081c] text-[#bd081c] hover:text-white border-[#bd081c]/30 shadow-[#bd081c]/10';
+    case 'tiktok':
+      return 'bg-[#ff0050]/10 hover:bg-[#ff0050] text-[#ff0050] hover:text-white border-[#ff0050]/30 shadow-[#ff0050]/10';
+    default:
+      return 'bg-purple-500/10 hover:bg-purple-600 text-purple-400 hover:text-white border-purple-500/20 shadow-purple-500/5';
+  }
+};
 
 // Typing Animation Sub-Component
 const TypingTitle: React.FC<{ words: string[] }> = ({ words }) => {
@@ -464,17 +528,22 @@ export const Portfolio: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="flex space-x-3 pt-4 border-t border-white/5">
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
                       {profile?.social_links?.github && (
-                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-white/5" title="GitHub Profile">
-                          <FaGithub className="w-4 h-4" />
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles('github')}`} title="GitHub Profile">
+                          {getSocialIcon('github', 'w-4 h-4')}
                         </a>
                       )}
                       {profile?.social_links?.linkedin && (
-                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-[#0a66c2]/30 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-[#0a66c2]/10" title="LinkedIn Profile">
-                          <FaLinkedin className="w-4 h-4" />
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles('linkedin')}`} title="LinkedIn Profile">
+                          {getSocialIcon('linkedin', 'w-4 h-4')}
                         </a>
                       )}
+                      {profile?.social_links?.custom_links && profile.social_links.custom_links.map((link: any, idx: number) => (
+                        <a key={idx} href={link.url} target="_blank" rel="noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles(link.platform)}`} title={`${link.platform} Link`}>
+                          {getSocialIcon(link.platform, 'w-4 h-4')}
+                        </a>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -962,17 +1031,22 @@ export const Portfolio: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="flex space-x-3 pt-6 border-t border-white/5">
+                    <div className="flex flex-wrap gap-2 pt-6 border-t border-white/5">
                       {profile?.social_links?.github && (
-                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-white/5" title="GitHub Profile">
-                          <FaGithub className="w-5 h-5" />
+                        <a href={profile.social_links.github} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles('github')}`} title="GitHub Profile">
+                          {getSocialIcon('github', 'w-5 h-5')}
                         </a>
                       )}
                       {profile?.social_links?.linkedin && (
-                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className="p-3 rounded-xl bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-[#0a66c2]/30 transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer shadow-md shadow-[#0a66c2]/10" title="LinkedIn Profile">
-                          <FaLinkedin className="w-5 h-5" />
+                        <a href={profile.social_links.linkedin} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles('linkedin')}`} title="LinkedIn Profile">
+                          {getSocialIcon('linkedin', 'w-5 h-5')}
                         </a>
                       )}
+                      {profile?.social_links?.custom_links && profile.social_links.custom_links.map((link: any, idx: number) => (
+                        <a key={idx} href={link.url} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 flex-1 flex justify-center items-center cursor-pointer border shadow-md ${getPlatformStyles(link.platform)}`} title={`${link.platform} Link`}>
+                          {getSocialIcon(link.platform, 'w-5 h-5')}
+                        </a>
+                      ))}
                     </div>
                   </div>
 
