@@ -68,14 +68,6 @@ export const Header: React.FC = () => {
                 {link.name}
               </motion.button>
             ))}
-            <MotionLink
-              to="/login"
-              whileTap={{ scale: 0.9, rotateX: -15, rotateY: 15 }}
-              className="flex items-center space-x-1 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-semibold hover:bg-purple-500/20 hover:text-white transition-all duration-300"
-            >
-              <FiLock className="w-3.5 h-3.5" />
-              <span>Admin</span>
-            </MotionLink>
           </div>
 
           {/* Mobile menu button */}
@@ -103,14 +95,6 @@ export const Header: React.FC = () => {
                 {link.name}
               </button>
             ))}
-            <Link
-              to="/login"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-2 px-4 py-3 text-purple-300 hover:text-white hover:bg-purple-500/15 transition-all"
-            >
-              <FiLock className="w-4 h-4" />
-              <span className="font-semibold text-sm">Access Admin Panel</span>
-            </Link>
           </div>
         </div>
       )}

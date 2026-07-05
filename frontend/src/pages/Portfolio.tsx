@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { ParticleBackground } from '../components/ParticleBackground';
@@ -111,6 +111,7 @@ export const Portfolio: React.FC = () => {
   // Interaction States
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSection = searchParams.get('section');
+  const navigate = useNavigate();
 
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
   const [activeCertModal, setActiveCertModal] = useState<any | null>(null);
@@ -1167,7 +1168,10 @@ export const Portfolio: React.FC = () => {
 
         {/* Unified Copyright Footer */}
         <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
-          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+          <p 
+            onClick={() => navigate('/login')} 
+            className="text-gray-400 text-sm font-medium tracking-tight text-center cursor-pointer select-none hover:text-gray-300 transition-colors"
+          >
             Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
           </p>
         </footer>
@@ -1332,7 +1336,10 @@ export const Portfolio: React.FC = () => {
 
         {/* Unified Copyright Footer */}
         <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
-          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+          <p 
+            onClick={() => navigate('/login')} 
+            className="text-gray-400 text-sm font-medium tracking-tight text-center cursor-pointer select-none hover:text-gray-300 transition-colors"
+          >
             Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
           </p>
         </footer>
@@ -1375,7 +1382,10 @@ export const Portfolio: React.FC = () => {
 
         {/* Copyright Footer */}
         <footer className="relative z-10 w-full py-8 border-t border-white/5 bg-[#02000a] text-center mt-16">
-          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+          <p 
+            onClick={() => navigate('/login')} 
+            className="text-gray-400 text-sm font-medium tracking-tight text-center cursor-pointer select-none hover:text-gray-300 transition-colors"
+          >
             Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
           </p>
         </footer>

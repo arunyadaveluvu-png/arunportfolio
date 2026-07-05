@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiArrowUp, FiGithub, FiLinkedin, FiMail, FiMapPin } from 'react-icons/fi';
 
 export const Footer: React.FC = () => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -83,7 +85,10 @@ export const Footer: React.FC = () => {
 
         {/* Divider */}
         <div className="border-t border-white/5 pt-8 flex flex-col items-center justify-center">
-          <p className="text-gray-400 text-sm font-medium tracking-tight text-center">
+          <p 
+            onClick={() => navigate('/login')} 
+            className="text-gray-400 text-sm font-medium tracking-tight text-center cursor-pointer select-none hover:text-gray-300 transition-colors"
+          >
             Copy-right &copy; Arun. Made with <span className="inline-block animate-pulse text-red-500">💖</span> by <span className="font-bold underline text-white">Arun Software Solutions</span>
           </p>
         </div>
