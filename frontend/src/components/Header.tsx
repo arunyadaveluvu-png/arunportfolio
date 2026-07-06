@@ -33,6 +33,7 @@ export const Header: React.FC = () => {
   const navLinks = [
     { name: 'About', id: 'about' },
     { name: 'Skills', id: 'skills' },
+    { name: 'Experience', id: 'experience' },
     { name: 'Projects', id: 'projects' },
     { name: 'Certifications', id: 'certifications' },
     { name: 'Education', id: 'education' },

@@ -123,6 +123,26 @@ export const api = {
     }),
   },
 
+  // Experience CRUD
+  experience: {
+    getAll: () => request<any[]>('/experience'),
+    create: async (data: any) => request<any>('/experience', {
+      method: 'POST',
+      headers: await getHeaders(),
+      body: JSON.stringify(data),
+    }),
+    update: async (id: string, data: any) => request<any>(`/experience/${id}`, {
+      method: 'PUT',
+      headers: await getHeaders(),
+      body: JSON.stringify(data),
+    }),
+    delete: async (id: string) => request<any>(`/experience/${id}`, {
+      method: 'DELETE',
+      headers: await getHeaders(),
+    }),
+  },
+
+
   // Profile CRUD
   profile: {
     get: () => request<any>('/profile'),

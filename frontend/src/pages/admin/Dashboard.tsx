@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import { FiBriefcase, FiCpu, FiAward, FiEye, FiMail, FiActivity, FiArrowRight } from 'react-icons/fi';
+import { FiBriefcase, FiCpu, FiAward, FiEye, FiMail, FiActivity, FiArrowRight, FiFolder } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 interface DashboardStats {
@@ -11,6 +11,7 @@ interface DashboardStats {
     visitors: number;
     unreadMessages: number;
     totalMessages: number;
+    experience?: number;
   };
   visitorTrends: { date: string; count: number }[];
   recentActivities: {
@@ -75,7 +76,8 @@ export const Dashboard: React.FC = () => {
     : '';
 
   const statCards = [
-    { title: 'Total Projects', value: stats.counts.projects, icon: FiBriefcase, color: 'from-blue-500/20 to-blue-600/10', textColor: 'text-blue-400', path: '/admin/projects' },
+    { title: 'Total Projects', value: stats.counts.projects, icon: FiFolder, color: 'from-blue-500/20 to-blue-600/10', textColor: 'text-blue-400', path: '/admin/projects' },
+    { title: 'Experience', value: stats.counts.experience || 0, icon: FiBriefcase, color: 'from-purple-500/20 to-purple-600/10', textColor: 'text-purple-400', path: '/admin/experience' },
     { title: 'Total Skills', value: stats.counts.skills, icon: FiCpu, color: 'from-emerald-500/20 to-emerald-600/10', textColor: 'text-emerald-400', path: '/admin/skills' },
     { title: 'Certificates', value: stats.counts.certificates, icon: FiAward, color: 'from-amber-500/20 to-amber-600/10', textColor: 'text-amber-400', path: '/admin/certificates' },
     { title: 'Total Visitors', value: stats.counts.visitors, icon: FiEye, color: 'from-indigo-500/20 to-indigo-600/10', textColor: 'text-indigo-400', path: '#' },
@@ -91,7 +93,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
         {statCards.map((card, idx) => {
           const Icon = card.icon;
           return (

@@ -277,3 +277,34 @@ insert into public.projects (title, description, technologies, github_url, live_
 insert into public.certificates (name, organization, issue_date, credential_id, verification_url, image_url) values
 ('Google Data Analytics Professional Certificate', 'Coursera - Google', '2025-08-14', 'GDA-10928374', 'https://coursera.org/verify/gda10928374', 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=800&q=80'),
 ('Machine Learning Specialization', 'Coursera - DeepLearning.AI', '2026-01-05', 'ML-98273641', 'https://coursera.org/verify/ml98273641', 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80');
+
+-- ============================================================================
+-- 10. Experience Table Configuration
+-- ============================================================================
+
+create table if not exists public.experience (
+  id uuid default gen_random_uuid() primary key,
+  role text not null,
+  company text not null,
+  location text,
+  description text,
+  skills text[] default '{}'::text[],
+  start_date date not null,
+  end_date date,
+  is_current boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- RLS Configuration
+alter table public.experience enable row level security;
+
+-- RLS Policies
+create policy "Allow public read access on experience" on public.experience for select using (true);
+create policy "Allow authenticated admin edit on experience" on public.experience for all using (auth.role() = 'authenticated');
+
+-- Experience Seed Data
+insert into public.experience (role, company, location, description, skills, start_date, end_date, is_current) values
+('Software Engineer Intern', 'Arun Software Solutions', 'Remote', 'Developed and optimized user interfaces for premium client portfolios using React and TypeScript. Integrated Supabase for robust backend and authentication services.', array['React', 'TypeScript', 'Supabase', 'Node.js'], '2025-06-01', null, true),
+('Data Analyst Trainee', 'KIIT University', 'Bhubaneswar, India', 'Collaborated on data analysis projects utilizing Python, Pandas, and Power BI to build dashboards tracking student performances and demographics.', array['Python', 'Pandas', 'Power BI', 'SQL'], '2024-05-01', '2024-07-31', false);
+

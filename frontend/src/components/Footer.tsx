@@ -120,7 +120,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-white text-sm font-bold tracking-wider uppercase mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {['about', 'skills', 'projects', 'certifications', 'education', 'contact'].map((item) => (
+              {['about', 'skills', 'experience', 'projects', 'certifications', 'education', 'contact'].map((item) => (
                 <li key={item}>
                   <a
                     href={`#${item}`}

@@ -15,6 +15,7 @@ import { ManageProjects } from './pages/admin/ManageProjects';
 import { ManageSkills } from './pages/admin/ManageSkills';
 import { ManageCertificates } from './pages/admin/ManageCertificates';
 import { ManageEducation } from './pages/admin/ManageEducation';
+import { ManageExperience } from './pages/admin/ManageExperience';
 import { ManageProfile } from './pages/admin/ManageProfile';
 import { ManageGallery } from './pages/admin/ManageGallery';
 import { ManageMessages } from './pages/admin/ManageMessages';
@@ -55,6 +56,7 @@ function App() {
             <Route path="skills" element={<ManageSkills />} />
             <Route path="certificates" element={<ManageCertificates />} />
             <Route path="education" element={<ManageEducation />} />
+            <Route path="experience" element={<ManageExperience />} />
             <Route path="profile" element={<ManageProfile />} />
             <Route path="gallery" element={<ManageGallery />} />
             <Route path="messages" element={<ManageMessages />} />

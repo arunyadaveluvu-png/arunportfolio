@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { supabase } from '../services/supabase';
 import { 
   FiGrid, FiBriefcase, FiCpu, FiAward, FiBookOpen, 
-  FiUser, FiImage, FiMail, FiSettings, FiLogOut, FiMenu, FiX 
+  FiUser, FiImage, FiMail, FiSettings, FiLogOut, FiMenu, FiX, FiFolder 
 } from 'react-icons/fi';
 
 export const AdminLayout: React.FC = () => {
@@ -21,7 +21,8 @@ export const AdminLayout: React.FC = () => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: FiGrid },
-    { name: 'Projects', path: '/admin/projects', icon: FiBriefcase },
+    { name: 'Projects', path: '/admin/projects', icon: FiFolder },
+    { name: 'Experience', path: '/admin/experience', icon: FiBriefcase },
     { name: 'Skills', path: '/admin/skills', icon: FiCpu },
     { name: 'Certificates', path: '/admin/certificates', icon: FiAward },
     { name: 'Education', path: '/admin/education', icon: FiBookOpen },

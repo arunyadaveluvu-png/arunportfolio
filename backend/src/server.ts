@@ -14,6 +14,7 @@ import messagesRouter from './routes/messages';
 import settingsRouter from './routes/settings';
 import statsRouter from './routes/stats';
 import contactRouter from './routes/contact';
+import experienceRouter from './routes/experience';
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/stats', statsRouter);
 app.use('/api/contact', contactRouter);
+app.use('/api/experience', experienceRouter);
 
 // Public route to log page visits (used by frontend)
 app.post('/api/visitor-log', async (req, res) => {

@@ -13,7 +13,7 @@ import {
   FiMail, FiPhone, FiMapPin, FiLink, 
   FiSearch, FiArrowRight, FiFileText, FiAward, FiBookOpen, 
   FiCpu, FiSend, FiCheck, FiCalendar, FiArrowUpRight, FiHeart,
-  FiX, FiEye, FiDownload
+  FiX, FiEye, FiDownload, FiBriefcase
 } from 'react-icons/fi';
 
 const getSocialIcon = (platform: string, className = "w-5 h-5") => {
@@ -191,6 +191,7 @@ export const Portfolio: React.FC = () => {
   const [skills, setSkills] = useState<any[]>([]);
   const [certs, setCerts] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [experience, setExperience] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
 
   // Interaction States
@@ -332,6 +333,31 @@ export const Portfolio: React.FC = () => {
       { id: '2', degree: 'Higher Secondary Education (Class XII)', college: 'DAV Public School', university: 'CBSE', year: '2019 - 2021', cgpa: 9.40 }
     ];
 
+    const defaultExperience = [
+      {
+        id: '1',
+        role: 'Software Engineer Intern',
+        company: 'Arun Software Solutions',
+        location: 'Remote',
+        description: 'Developed and optimized user interfaces for premium client portfolios using React and TypeScript. Integrated Supabase for robust backend and authentication services.',
+        skills: ['React', 'TypeScript', 'Supabase', 'Node.js'],
+        start_date: '2025-06-01',
+        end_date: null,
+        is_current: true
+      },
+      {
+        id: '2',
+        role: 'Data Analyst Trainee',
+        company: 'KIIT University',
+        location: 'Bhubaneswar, India',
+        description: 'Collaborated on data analysis projects utilizing Python, Pandas, and Power BI to build dashboards tracking student performances and demographics.',
+        skills: ['Python', 'Pandas', 'Power BI', 'SQL'],
+        start_date: '2024-05-01',
+        end_date: '2024-07-31',
+        is_current: false
+      }
+    ];
+
     // 1. Fetch all portfolio database modules independently
     const loadPortfolioData = async () => {
       // Load Profile
@@ -377,6 +403,15 @@ export const Portfolio: React.FC = () => {
       } catch (err) {
         console.warn('Failed to load education timeline. Using fallback.');
         setEducation(defaultEducation);
+      }
+
+      // Load Experience
+      try {
+        const expData = await api.experience.getAll();
+        setExperience(expData && expData.length > 0 ? expData : defaultExperience);
+      } catch (err) {
+        console.warn('Failed to load experience timeline. Using fallback.');
+        setExperience(defaultExperience);
       }
 
       // Load Settings
@@ -931,6 +966,65 @@ export const Portfolio: React.FC = () => {
                               <FiArrowUpRight className="w-3 h-3" />
                             </a>
                           ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          );
+        case 'experience':
+          return (
+            <section id="experience" className={isSubPage ? "relative py-12 px-4 sm:px-6 lg:px-8" : "relative py-28 px-4 sm:px-6 lg:px-8 z-10 border-t border-white/5 bg-[#02000a]/10"}>
+              <div className="max-w-4xl mx-auto animate-fade-in">
+                <div className="text-center mb-16 space-y-2">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Work Experience</h2>
+                  <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mt-3"></div>
+                </div>
+
+                <div className="relative border-l border-white/10 ml-4 md:ml-8 space-y-12">
+                  {experience.map((exp, idx) => {
+                    const startDisp = exp.start_date ? new Date(exp.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : '';
+                    const endDisp = exp.is_current ? 'Present' : (exp.end_date ? new Date(exp.end_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : '');
+                    
+                    return (
+                      <div 
+                        key={exp.id} 
+                        className="relative pl-8 md:pl-10"
+                      >
+                        <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-[#030014] shadow-lg shadow-purple-600/30"></div>
+                        
+                        <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/10 w-fit">
+                              {startDisp} - {endDisp}
+                            </span>
+                            {exp.location && (
+                              <span className="text-xs text-gray-400 flex items-center space-x-1">
+                                <FiMapPin className="w-3.5 h-3.5 text-purple-400" />
+                                <span>{exp.location}</span>
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-md font-bold text-white leading-snug">{exp.role}</h3>
+                            <p className="text-purple-300 text-sm font-semibold mt-0.5">{exp.company}</p>
+                          </div>
+                          {exp.description && (
+                            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+                              {exp.description}
+                            </p>
+                          )}
+                          {exp.skills && exp.skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 pt-2">
+                              {exp.skills.map((skill: string, sIdx: number) => (
+                                <span key={sIdx} className="text-[10px] px-2.5 py-1 rounded bg-white/10 text-gray-200 border border-white/10">
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -1600,6 +1694,7 @@ export const Portfolio: React.FC = () => {
       {/* Inline scrollable sections on home page */}
       {renderSection('about')}
       {renderSection('skills')}
+      {renderSection('experience')}
       {renderSection('projects')}
       {renderSection('certifications')}
       {renderSection('education')}

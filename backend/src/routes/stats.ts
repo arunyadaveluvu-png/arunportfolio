@@ -40,14 +40,16 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res) => {
       certs,
       unreadMessages,
       totalMessages,
-      visitors
+      visitors,
+      experience
     ] = await Promise.all([
       getCount('projects'),
       getCount('skills'),
       getCount('certificates'),
       getCount('messages', { field: 'is_read', value: false }),
       getCount('messages'),
-      getCount('visitor_logs')
+      getCount('visitor_logs'),
+      getCount('experience')
     ]);
 
     // 2. Fetch logs safely
@@ -119,7 +121,8 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res) => {
         certificates: certs,
         visitors,
         unreadMessages,
-        totalMessages
+        totalMessages,
+        experience
       },
       visitorTrends: formattedTrends,
       recentActivities: recentActivities.slice(0, 10)
