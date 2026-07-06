@@ -333,30 +333,6 @@ export const Portfolio: React.FC = () => {
       { id: '2', degree: 'Higher Secondary Education (Class XII)', college: 'DAV Public School', university: 'CBSE', year: '2019 - 2021', cgpa: 9.40 }
     ];
 
-    const defaultExperience = [
-      {
-        id: '1',
-        role: 'Software Engineer Intern',
-        company: 'Arun Software Solutions',
-        location: 'Remote',
-        description: 'Developed and optimized user interfaces for premium client portfolios using React and TypeScript. Integrated Supabase for robust backend and authentication services.',
-        skills: ['React', 'TypeScript', 'Supabase', 'Node.js'],
-        start_date: '2025-06-01',
-        end_date: null,
-        is_current: true
-      },
-      {
-        id: '2',
-        role: 'Data Analyst Trainee',
-        company: 'KIIT University',
-        location: 'Bhubaneswar, India',
-        description: 'Collaborated on data analysis projects utilizing Python, Pandas, and Power BI to build dashboards tracking student performances and demographics.',
-        skills: ['Python', 'Pandas', 'Power BI', 'SQL'],
-        start_date: '2024-05-01',
-        end_date: '2024-07-31',
-        is_current: false
-      }
-    ];
 
     // 1. Fetch all portfolio database modules independently
     const loadPortfolioData = async () => {
@@ -408,10 +384,10 @@ export const Portfolio: React.FC = () => {
       // Load Experience
       try {
         const expData = await api.experience.getAll();
-        setExperience(expData && expData.length > 0 ? expData : defaultExperience);
+        setExperience(expData || []);
       } catch (err) {
-        console.warn('Failed to load experience timeline. Using fallback.');
-        setExperience(defaultExperience);
+        console.warn('Failed to load experience timeline.');
+        setExperience([]);
       }
 
       // Load Settings

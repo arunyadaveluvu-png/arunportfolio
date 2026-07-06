@@ -4,31 +4,6 @@ import { requireAuth, AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 
-const defaultExperience = [
-  {
-    id: '1',
-    role: 'Software Engineer Intern',
-    company: 'Arun Software Solutions',
-    location: 'Remote',
-    description: 'Developed and optimized user interfaces for premium client portfolios using React and TypeScript. Integrated Supabase for robust backend and authentication services.',
-    skills: ['React', 'TypeScript', 'Supabase', 'Node.js'],
-    start_date: '2025-06-01',
-    end_date: null,
-    is_current: true
-  },
-  {
-    id: '2',
-    role: 'Data Analyst Trainee',
-    company: 'KIIT University',
-    location: 'Bhubaneswar, India',
-    description: 'Collaborated on data analysis projects utilizing Python, Pandas, and Power BI to build dashboards tracking student performances and demographics.',
-    skills: ['Python', 'Pandas', 'Power BI', 'SQL'],
-    start_date: '2024-05-01',
-    end_date: '2024-07-31',
-    is_current: false
-  }
-];
-
 // GET all experience records (Public)
 router.get('/', async (req, res) => {
   try {
@@ -40,8 +15,8 @@ router.get('/', async (req, res) => {
     if (error) throw error;
     return res.json(data);
   } catch (err: any) {
-    console.warn('Fetch experience failed (db table missing or asleep). Serving fallback experiences.');
-    return res.json(defaultExperience);
+    console.warn('Fetch experience failed (db table missing or asleep). Returning empty experience list.');
+    return res.json([]);
   }
 });
 
